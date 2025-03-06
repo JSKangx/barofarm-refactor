@@ -1,16 +1,27 @@
 {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
+    // JavaScript 파일도 TypeScript 체크 대상에 포함
     "allowJs": true,
+    // node_modules의 타입 체크 스킵 (빌드 속도 향상)
     "skipLibCheck": true,
+    // 모든 엄격한 타입-체킹 옵션 활성화
     "strict": true,
+    // TypeScript는 타입 체크만 수행하고 JavaScript 파일을 생성하지 않음
     "noEmit": true,
+    // CommonJS 모듈을 ES6 모듈처럼 사용 가능
     "esModuleInterop": true,
+    // 최신 모듈 시스템 사용
     "module": "esnext",
+    // 모듈 해석 방식
     "moduleResolution": "bundler",
+    // TypeScript가 JSON 파일을 직접 가져올 수 있게 해줌
     "resolveJsonModule": true,
+    // 각 파일을 독립적으로 트랜스파일 가능하게 함
     "isolatedModules": true,
+    // TypeScript 컴파일러는 JSX 구문을 그대로 유지
     "jsx": "preserve",
+    // 증분 컴파일을 활성화하는 옵션
     "incremental": true,
     "plugins": [
       {
