@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Providers from "components/providers/RQProvider";
+import DynamicHeader from "components/_/DynamicHeader";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -24,8 +25,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${pretendard.variable} antialiased`}>
-        <Providers>{children}</Providers>
+      <body
+        className={`${pretendard.variable} antialiased max-w-[390px] mx-auto`}
+      >
+        <Providers>
+          <DynamicHeader />
+          <main className="pb-[100px] pt-[70px]">{children}</main>
+        </Providers>
       </body>
     </html>
   );
