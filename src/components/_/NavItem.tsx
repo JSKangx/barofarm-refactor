@@ -17,12 +17,13 @@ export default function NavItem({
   isActive,
 }: NavItemProps) {
   return (
-    <Link href={to} className="flex flex-col items-center">
+    <Link href={to} className="flex flex-col items-center" aria-current="page">
       <Image
         src={isActive ? activeIcon : defaultIcon}
         width={40}
         height={40}
         alt={`${label}icon`}
+        className="size-10"
       />
       <span>{label}</span>
     </Link>
