@@ -16,8 +16,16 @@ export default function DynamicHeader() {
 
   // 경로별로 헤더 구성 설정
   const getHeaderConfig = (): HeaderConfig => {
+    // 헤더 구성 (디폴트)
+    let headerConfig: HeaderConfig = {
+      // 기본적으로는 back 버튼이 들어감
+      leftChild: <HeaderIcon name="back" onClick={() => router.back()} />,
+      title: "",
+    };
+
+    // 홈페이지
     if (pathname === "/") {
-      return {
+      headerConfig = {
         leftChild: (
           <Image
             src="/images/BaroFarmLogo_long.png"
@@ -38,6 +46,8 @@ export default function DynamicHeader() {
         ),
       };
     }
+
+    return headerConfig;
   };
 
   const { leftChild, title, rightChild } = getHeaderConfig();

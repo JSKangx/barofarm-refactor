@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Providers from "components/providers/RQProvider";
 import DynamicHeader from "components/_/DynamicHeader";
+import Navbar from "components/_/NavBar";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -31,6 +32,7 @@ export default function RootLayout({
         <Providers>
           <DynamicHeader />
           <main className="pb-[100px] pt-[70px]">{children}</main>
+          <Navbar />
         </Providers>
       </body>
     </html>
