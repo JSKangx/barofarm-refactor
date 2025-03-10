@@ -1,6 +1,4 @@
 // RequestInit : fetch API의 기본 옵션 타입
-// HeadersInit : 헤더 관련 타입
-// RequestInit에서 headers 속성만 제외한 타입 + headers 속성을 추가하여 커스텀 타입 정의
 type FetchApiOptions = RequestInit & {
   next?: {
     revalidate?: number | false;

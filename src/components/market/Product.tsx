@@ -20,8 +20,10 @@ export default function Product(product: ProductType) {
     <section className="flex flex-col cursor-pointer" onClick={goDetailPage}>
       <div className="relative">
         <Image
-          width={160}
-          height={160}
+          priority
+          width={0}
+          height={0}
+          sizes="100%"
           className="h-[160px] rounded-lg object-cover w-full"
           alt={product.name}
           src={`https://11.fesp.shop${product.mainImages[0]?.path}`}

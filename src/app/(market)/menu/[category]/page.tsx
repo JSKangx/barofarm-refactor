@@ -1,41 +1,31 @@
-"use client";
+import ClientCategory from "app/(market)/menu/[category]/ClientPage";
 
-import { useQuery } from "@tanstack/react-query";
-import Products from "components/market/Products";
-import Spinner from "components/Spinner";
-import { fetchApi } from "lib/api";
-import { ProductsResponse } from "type/product";
+const categoryTitle = [
+  { key: "fruit", label: "과일" },
+  { key: "vegetable", label: "채소" },
+  { key: "kimchi", label: "김치" },
+  { key: "liveStock", label: "축산물" },
+  { key: "seafood", label: "수산물" },
+  { key: "simple", label: "간편식" },
+  { key: "riceCake", label: "떡" },
+  { key: "rice", label: "쌀 / 잡곡" },
+];
 
-type CategoryProps = {
+type Props = {
   params: {
     category: string;
   };
 };
-export default function Category({ params }: CategoryProps) {
-  const { category } = params;
+export function generateMetadata({ params }: Props) {
+  const categoryLabel =
+    categoryTitle.find((item) => item.key === params.category)?.label ||
+    "카테고리";
+  return {
+    title: `${categoryLabel} | 바로Farm`,
+    description: `바로Farm ${categoryLabel} 카테고리 페이지입니다.`,
+  };
+}
 
-  // 카테고리별 데이터 가져오기
-  const { data: products, isLoading } = useQuery({
-    queryKey: ["products", category],
-    queryFn: async () => {
-      const params = new URLSearchParams();
-      params.append("custom", JSON.stringify({ "extra.category": category }));
-
-      const data: ProductsResponse = await fetchApi(
-        `/products?${params.toString()}`,
-        {
-          next: {
-            revalidate: 60,
-          },
-        }
-      );
-      return data;
-    },
-    select: (res) => res.item,
-  });
-
-  // 로딩 상태 처리
-  if (isLoading) return <Spinner />;
-
-  return <Products productsData={products} />;
+export default function Category({ params }: Props) {
+  return <ClientCategory params={params} />;
 }
