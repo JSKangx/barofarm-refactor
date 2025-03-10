@@ -2,11 +2,18 @@ import { MenuItemProps } from "app/(market)/menu/page";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function MenuItem({ to, image, title }: MenuItemProps) {
+export default function MenuItem({
+  to,
+  image,
+  title,
+  category,
+  handleMouseEnter,
+}: MenuItemProps) {
   return (
     <Link
       href={to}
       className="flex items-center justify-between border-b-[1px] p-5"
+      onMouseEnter={() => handleMouseEnter(category)}
     >
       <span className="flex items-center gap-2">
         <Image
