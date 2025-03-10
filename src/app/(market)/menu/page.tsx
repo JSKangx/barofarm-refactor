@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import MenuItem from "components/_/MenuItem";
 import { getCategoryProducts } from "server-action";
 
@@ -68,16 +64,17 @@ const menuItems: Omit<MenuItemProps, "handleMouseEnter">[] = [
 
 export default function Menu() {
   // data prefetching
-  const queryClient = new QueryClient();
-  const handleMouseEnter = async (category: string) => {
-    await queryClient.prefetchQuery({
+  const queryClient = useQueryClient();
+  const handleMouseEnter = (category: string) => {
+    // 서버 액션을 사용한 prefetch
+    queryClient.prefetchQuery({
       queryKey: ["products", category],
-      queryFn: () => getCategoryProducts(category),
+      queryFn: async () => await getCategoryProducts(category),
     });
   };
 
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
+    <>
       {menuItems.map((item) => (
         <li key={item.to}>
           <MenuItem
@@ -89,6 +86,6 @@ export default function Menu() {
           />
         </li>
       ))}
-    </HydrationBoundary>
+    </>
   );
 }

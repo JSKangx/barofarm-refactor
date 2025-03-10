@@ -14,5 +14,5 @@ export async function getCategoryProducts(category: string) {
       },
     }
   );
-  return data.item;
+  return data;
 }
