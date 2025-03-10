@@ -24,6 +24,7 @@ export interface Product {
   price: number;
   quantity: number;
   replies: number;
+  rating?: number;
   seller: {
     address: string;
     bookmark: {

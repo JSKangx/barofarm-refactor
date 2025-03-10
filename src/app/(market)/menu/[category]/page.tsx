@@ -1,6 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import Products from "components/market/Products";
+import Spinner from "components/Spinner";
 import { fetchApi } from "lib/api";
 import { ProductsResponse } from "type/product";
 
@@ -13,7 +15,7 @@ export default function Category({ params }: CategoryProps) {
   const { category } = params;
 
   // 카테고리별 데이터 가져오기
-  const { data: products } = useQuery({
+  const { data: products, isLoading } = useQuery({
     queryKey: ["products", category],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -29,9 +31,11 @@ export default function Category({ params }: CategoryProps) {
       );
       return data;
     },
+    select: (res) => res.item,
   });
 
-  console.log(products);
+  // 로딩 상태 처리
+  if (isLoading) return <Spinner />;
 
-  return <h1>{category}</h1>;
+  return <Products productsData={products} />;
 }
