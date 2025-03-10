@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { fetchApi } from "lib/api";
+import { ProductsResponse } from "type/product";
 
 type CategoryProps = {
   params: {
@@ -18,11 +19,14 @@ export default function Category({ params }: CategoryProps) {
       const params = new URLSearchParams();
       params.append("custom", JSON.stringify({ "extra.category": category }));
 
-      const data = await fetchApi(`/products?${params.toString()}`, {
-        next: {
-          revalidate: 60,
-        },
-      });
+      const data: ProductsResponse = await fetchApi(
+        `/products?${params.toString()}`,
+        {
+          next: {
+            revalidate: 60,
+          },
+        }
+      );
       return data;
     },
   });
