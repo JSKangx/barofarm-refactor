@@ -15,7 +15,7 @@ export interface MenuItemProps {
   category: string;
   handleMouseEnter: (category: string) => void;
 }
-const menuItems: MenuItemProps[] = [
+const menuItems: Omit<MenuItemProps, "handleMouseEnter">[] = [
   {
     to: "/menu/fruit",
     image: "/images/menu/Fruit.svg",
