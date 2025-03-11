@@ -33,7 +33,7 @@ export default async function Home() {
   const currentMonth = new Date().getMonth() + 1;
   // 제철 상품 렌더링
   const onMonthProducts = products.item
-    .filter((item) => item.extra.bestMonth?.includes(currentMonth))
+    .filter((item) => item.extra.bestSeason?.includes(currentMonth))
     .filter((_, index) => index < 6);
 
   return (

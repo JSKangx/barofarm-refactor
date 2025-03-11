@@ -24,25 +24,27 @@ export default function ProductBig(product: ProductType) {
       className="flex flex-col shrink-0 py-5 w-[201px] cursor-pointer"
       onClick={goDetailPage}
     >
-      <div className="relative">
+      <div className="relative h-[279px] w-full">
         <Image
-          className="h-[279px] rounded-lg object-cover"
-          width={0}
-          height={0}
+          className="rounded-lg object-cover"
+          fill
           alt={product.name}
           src={`https://11.fesp.shop${product.mainImages[0]?.path}`}
         />
         <button
-          className="absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-bottom"
+          className="absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-bottom z-10"
           onClick={(e) => {
             e.stopPropagation();
             handleLike();
           }}
         >
-          <Image
-            src={isLiked ? likeIcon.active : likeIcon.default}
-            alt="subscribe button"
-          />
+          <div className="relative size-6">
+            <Image
+              fill
+              src={isLiked ? likeIcon.active : likeIcon.default}
+              alt="subscribe button"
+            />
+          </div>
         </button>
       </div>
       <div className="pl-[5px] pt-[10px]">
