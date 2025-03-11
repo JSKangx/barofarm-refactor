@@ -5,7 +5,11 @@ type FetchApiOptions = RequestInit & {
     tags?: string[];
   };
   cache?: RequestCache;
+  delay?: number; // delay 옵션 추가
 };
+
+// delay 유틸리티 함수
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // 공통 fetch 유틸리티
 // fetch api처럼 매개변수로 url과 options 객체를 받는다.
@@ -20,6 +24,11 @@ export async function fetchApi(
     "client-id": "final04",
     ...(options.headers || {}),
   };
+
+  // delay 옵션이 있으면 지정된 시간만큼 지연
+  if (options.delay && options.delay > 0) {
+    await sleep(options.delay);
+  }
 
   // fetchApi 함수를 호출하는 곳에서 전체 url을 전달할 때랑 endpoint만 전달할 때 둘 다 적용되게 하기
   const url = endpoint.startsWith("http") ? endpoint : `${baseUrl}${endpoint}`;

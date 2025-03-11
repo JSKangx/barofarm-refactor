@@ -4,6 +4,8 @@ import "./globals.css";
 import Providers from "components/providers/RQProvider";
 import DynamicHeader from "components/_/DynamicHeader";
 import Navbar from "components/_/NavBar";
+import { Suspense } from "react";
+import Spinner from "components/Spinner";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -31,7 +33,9 @@ export default function RootLayout({
       >
         <Providers>
           <DynamicHeader />
-          <main className="pb-[100px] pt-[70px]">{children}</main>
+          <Suspense fallback={<Spinner />}>
+            <main className="pb-[100px] pt-[70px]">{children}</main>
+          </Suspense>
           <Navbar />
         </Providers>
       </body>
