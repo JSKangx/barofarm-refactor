@@ -6,9 +6,17 @@ import getMonthlyData from "utils/getMonthlyData";
 
 export default async function Home() {
   // 상품 목록 fetching
-  const products: ProductsResponse = await fetchApi("/products");
+  const products: ProductsResponse = await fetchApi("/products", {
+    next: {
+      revalidate: 300,
+    },
+  });
   // 게시글 목록 fetching
-  const posts: PostResponse = await fetchApi("/posts?type=community");
+  const posts: PostResponse = await fetchApi("/posts?type=community", {
+    next: {
+      revalidate: 300,
+    },
+  });
 
   // 데이터 없을시 null 반환하여 에러 방지
   if (!products) return null;
