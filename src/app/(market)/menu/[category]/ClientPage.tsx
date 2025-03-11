@@ -14,7 +14,7 @@ type CategoryProps = {
 export default function ClientCategory({ params }: CategoryProps) {
   const { category } = params;
 
-  // 카테고리별 데이터 가져오기
+  // 카테고리별 상품 목록 가져오기
   const { data: products, isLoading } = useQuery({
     queryKey: ["products", category],
     queryFn: async () => {

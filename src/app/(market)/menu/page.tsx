@@ -2,7 +2,7 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import MenuItem from "components/_/MenuItem";
-import { getCategoryProducts } from "server-action";
+import { getProducts } from "server-action";
 
 export interface MenuItemProps {
   to: string;
@@ -69,7 +69,7 @@ export default function Menu() {
     // 서버 액션을 사용한 prefetch
     queryClient.prefetchQuery({
       queryKey: ["products", category],
-      queryFn: async () => await getCategoryProducts(category),
+      queryFn: async () => await getProducts(category),
     });
   };
 

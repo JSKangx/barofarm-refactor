@@ -1,111 +1,48 @@
-export default function Home() {
+import HomeClient from "components/_/root/HomeClient";
+import { fetchApi } from "lib/api";
+import { PostResponse } from "type/board";
+import { ProductType, ProductsResponse } from "type/product";
+import getMonthlyData from "utils/getMonthlyData";
+
+export default async function Home() {
+  // 상품 목록 fetching
+  const products: ProductsResponse = await fetchApi("/products");
+  // 게시글 목록 fetching
+  const posts: PostResponse = await fetchApi("/posts?type=community");
+
+  // 데이터 없을시 null 반환하여 에러 방지
+  if (!products) return null;
+
+  // 캐러셀을 위한 할인 상품 sorting
+  const saleProducts = products.item
+    .toSorted((a: ProductType, b: ProductType) => b.extra.sale - a.extra.sale)
+    .filter((_, index) => index < 6);
+
+  // 인기 상품 렌더링
+  const bestProducts = products.item
+    .toSorted((a: ProductType, b: ProductType) => b.buyQuantity - a.buyQuantity)
+    // 4개의 상품만 골라서 Product 컴포넌트로 보여준다.
+    .filter((_, index) => index < 4);
+
+  // 새상품 렌더링
+  const newProducts = getMonthlyData(products)
+    // 4개의 상품만 골라서 Product 컴포넌트로 보여준다.
+    .filter((_, index) => index < 4);
+
+  // 현재 날짜
+  const currentMonth = new Date().getMonth() + 1;
+  // 제철 상품 렌더링
+  const onMonthProducts = products.item
+    .filter((item) => item.extra.bestMonth?.includes(currentMonth))
+    .filter((_, index) => index < 6);
+
   return (
-    <div>
-      <Carousel height={225} data={saleProducts} />
-      <section className="px-5 mb-4">
-        <h2 className="text-xl mb-3">
-          관심있는 <span className="font-bold">카테고리</span> 선택하기
-        </h2>
-        <div className="category-div grid grid-cols-4 gap-y-[6px] gap-x-[14px] text-[14px] *:flex *:flex-col *:text-center">
-          {categoryIcons}
-        </div>
-      </section>
-      <section className="px-5 mb-4">
-        <div className="flex justify-between mb-3">
-          <h2 className="text-xl">
-            지금 최고 <span className="font-bold">인기 상품! 🔥</span>
-          </h2>
-          <Link
-            to={"/search/best"}
-            className="text-xs flex gap-1 items-start cursor-pointer"
-          >
-            더보기
-            <img
-              src="/icons/icon_move.svg"
-              alt="더보기 버튼"
-              className="size-4"
-            />
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 justify-between gap-5">
-          {bestProducts}
-        </div>
-      </section>
-      <section className="px-5 mb-4">
-        <div className="flex justify-between mb-3">
-          <h2 className="text-xl">
-            따끈따끈한 <span className="font-bold">신상품! ⏰</span>
-          </h2>
-          <Link
-            to={"/search/new"}
-            className="text-xs flex gap-1 items-start cursor-pointer"
-          >
-            더보기
-            <img
-              src="/icons/icon_move.svg"
-              alt="더보기 버튼"
-              className="size-4"
-            />
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 justify-between gap-5">
-          {newProducts}
-        </div>
-      </section>
-      <section className="px-5 mb-4">
-        <div className="flex justify-between">
-          <h2 className="text-xl">
-            이 맛이야! <span className="font-bold">제철 음식 🍂</span>
-          </h2>
-          <Link
-            to={"/search/seasonal"}
-            className="text-xs flex gap-1 items-start cursor-pointer"
-          >
-            더보기
-            <img
-              src="/icons/icon_move.svg"
-              alt="더보기 버튼"
-              className="size-4"
-            />
-          </Link>
-        </div>
-        <div className="flex overflow-x-auto gap-3">{onMonthProducts}</div>
-      </section>
-      <section className="mb-4">
-        <div className="flex justify-between px-5 mb-4">
-          <h2 className="text-xl">
-            나만의 <span className="font-bold">요리 스토리 🥘</span>
-          </h2>
-          <div className="flex gap-1 items-start relative *:relative *:top-1">
-            <Link to="/board" className="text-xs">
-              커뮤니티 가기
-            </Link>
-            <button>
-              <img
-                src="/icons/icon_move.svg"
-                alt="더보기 버튼"
-                className="size-4"
-              />
-            </button>
-          </div>
-        </div>
-        {storyImages}
-      </section>
-      <section className="flex flex-col gap-1 px-5 bg-gray1 text-black text-sm py-5 text-center">
-        <p className="font-semibold">(주) 바로팜 사업자 정보</p>
-        <p>
-          (주)바로팜 | 대표자 : 바로팜 <br />
-          사업자 등록번호 : 023-25-59672 <br />
-          주소 : 서울 강남구 옆집의 옆집 234로 무천타워 2층 <br />
-          대표번호 : 1588-1028 <br />
-          메일 : baroFarm@baroFarm.co.kr
-        </p>
-        <p className="font-semibold">고객센터 1800-1800</p>
-        <p className="mb-[58px]">
-          누구보다 빠르게 남들과는 다르게 상담해 드립니다.
-        </p>
-        <p>이용약관 | 개인정보처리방침 | 게시글 수집 및 이용 안내</p>
-      </section>
-    </div>
+    <HomeClient
+      saleProducts={saleProducts}
+      bestProducts={bestProducts}
+      newProducts={newProducts}
+      onMonthProducts={onMonthProducts}
+      posts={posts.item}
+    />
   );
 }

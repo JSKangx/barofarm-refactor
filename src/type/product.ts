@@ -1,10 +1,11 @@
-export interface Product {
+export interface ProductType {
   active: boolean;
   bookmarks: number;
   buyQuantity: number;
   createdAt: string;
   extra: {
     bestSeason: number[];
+    bestMonth?: number[];
     category: string;
     depth: number;
     isBest: boolean;
@@ -56,6 +57,7 @@ export interface Product {
   show: boolean;
   updatedAt: string;
   _id: number;
+  myBookmarkId?: number;
 }
 
 export interface Pagination {
@@ -66,7 +68,7 @@ export interface Pagination {
 }
 
 export interface ProductsResponse {
-  item: Product[];
+  item: ProductType[];
   pagination: Pagination;
   ok: number;
 }

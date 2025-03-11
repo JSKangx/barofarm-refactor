@@ -1,4 +1,4 @@
-import Product from "./Product";
+import Product from "../_/market/Product";
 import { Product as ProductType } from "type/product";
 
 export default function Products({

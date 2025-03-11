@@ -1,47 +1,47 @@
+"use client";
+
+import { useLikeToggle } from "hook/useLikeToggle";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Product as ProductType } from "type/product";
+import { ProductType } from "type/product";
 
 const likeIcon = {
   default: "/icons/icon_likeHeart_no.svg",
   active: "/icons/icon_likeHeart_yes.svg",
 };
 
-export default function Product(product: ProductType) {
+export default function ProductBig(product: ProductType) {
   const router = useRouter();
 
   const goDetailPage = () => {
     router.push(`/product/${product._id}`);
   };
 
-  // const { isLiked, handleLike } = useLikeToggle(product);
+  const { isLiked, handleLike } = useLikeToggle(product);
 
   return (
-    <section className="flex flex-col cursor-pointer" onClick={goDetailPage}>
+    <section
+      className="flex flex-col shrink-0 py-5 w-[201px] cursor-pointer"
+      onClick={goDetailPage}
+    >
       <div className="relative">
         <Image
-          priority
+          className="h-[279px] rounded-lg object-cover"
           width={0}
           height={0}
-          sizes="100%"
-          className="h-[160px] rounded-lg object-cover w-full"
           alt={product.name}
           src={`https://11.fesp.shop${product.mainImages[0]?.path}`}
         />
         <button
-          className="absolute bottom-3 right-3 bg-white p-1.5 rounded-full shadow-bottom"
-          // onClick={(e) => {
-          //   e.stopPropagation();
-          //   handleLike();
-          // }}
+          className="absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-bottom"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleLike();
+          }}
         >
           <Image
-            width={20}
-            height={20}
-            className="w-5"
-            // src={isLiked ? likeIcon.active : likeIcon.default}
-            src={likeIcon.default}
-            alt="like icon"
+            src={isLiked ? likeIcon.active : likeIcon.default}
+            alt="subscribe button"
           />
         </button>
       </div>
@@ -52,7 +52,7 @@ export default function Product(product: ProductType) {
         <p className="text-xs line-clamp-1">{product.name}</p>
         <div className="pt-1 flex items-center">
           <span className="text-red1 font-semibold text-base pr-1">
-            {product.extra.sale !== 0 ? `${product.extra.sale}%` : undefined}
+            {product.extra.sale}%
           </span>
           <span className="font-extrabold text-lg line-clamp-1">
             {product.extra.saledPrice.toLocaleString()}원
@@ -61,14 +61,9 @@ export default function Product(product: ProductType) {
         <span className="font-semibold text-xs pr-2">
           ⭐️ {product.rating ? product.rating.toFixed(1) : 0}
         </span>
-        <span className="text-gray4 font-regular text-xs ">
-          (
-          {Array.isArray(product.replies)
-            ? product.replies.length > 0
-              ? product.replies.length
-              : 0
-            : product.replies}
-          )
+        <span className="text-gray4 font-regular text-xs">
+          {" "}
+          ({product.replies})
         </span>
       </div>
     </section>
