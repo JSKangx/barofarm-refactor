@@ -16,16 +16,18 @@ export const useLikeToggle = (product: ProductType) => {
     mutationFn: async () => {
       if (!product) return;
       const response = await fetchApi(`/bookmarks/product`, {
-        body: {
+        body: JSON.stringify({
           target_id: product._id,
-        },
+        }),
       });
       return response.data.item;
     },
 
     onSuccess: () => {
       setIsLiked(true);
-      queryClient.invalidateQueries(["products"], product.extra.category);
+      queryClient.invalidateQueries({
+        queryKey: ["products", product.extra.category],
+      });
     },
     onError: (error) => {
       console.error("찜 추가 실패: ", error);
@@ -42,7 +44,9 @@ export const useLikeToggle = (product: ProductType) => {
     },
     onSuccess: () => {
       setIsLiked(false);
-      queryClient.invalidateQueries(["products"], product.extra.category);
+      queryClient.invalidateQueries({
+        queryKey: ["products", product.extra.category],
+      });
     },
     onError: (error) => {
       console.error("좋아요 삭제 실패: ", error);
