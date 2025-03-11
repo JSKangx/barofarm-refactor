@@ -24,6 +24,7 @@
 
 <div>
   <!-- 개발 도구 -->
+  <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Next.js</title><path d="M18.665 21.978C16.758 23.255 14.465 24 12 24 5.377 24 0 18.623 0 12S5.377 0 12 0s12 5.377 12 12c0 3.583-1.574 6.801-4.067 9.001L9.219 7.2H7.2v9.596h1.615V9.251l9.85 12.727Zm-3.332-8.533 1.6 2.061V7.2h-1.6v6.245Z"/></svg>
   <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
   <img src="https://img.shields.io/badge/figma-666666?style=for-the-badge&logo=figma&logoColor=white">
@@ -47,81 +48,7 @@
 <br>
 <br>
 
-### 🐝 팀원 소개 및 담당 역할
-
-<table style="border-collapse: collapse;">
-    <tr>
-      <td style="border: 1px solid #ddd; text-align: center;"><p align="center" style="margin: 0;"><strong>강진수 (발표자)</strong></p></td>
-      <td style="border: 1px solid #ddd; text-align: center;"><p align="center" style="margin: 0;"><strong>고태호 (리더)</strong></p></td>
-      <td style="border: 1px solid #ddd; text-align: center;"><p align="center" style="margin: 0;"><strong>권새봄 (팀원)</strong></p></td>
-      <td style="border: 1px solid #ddd; text-align: center;"><p align="center" style="margin: 0;"><strong>황은지 (팀원)</strong></p></td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid #ddd; text-align: center;">
-        <a href="https://github.com/JSKangx">
-          <img src="./public/images/reademe/jinsu.png" width="150" height="150">
-          <p align="center" style="margin: 0;">JSKangx</p>
-        </a>
-      </td>
-      <td style="border: 1px solid #ddd; text-align: center;">
-        <a href="https://github.com/Taiho1998">
-          <img src="./public/images/reademe/taiho.png" width="150" height="150">
-          <p align="center" style="margin: 0;">Taiho1998</p>
-        </a>
-      </td>
-      <td style="border: 1px solid #ddd; text-align: center;">
-        <a href="https://github.com/kwonsaebom">
-          <img src="./public/images/reademe/seabom.png" width="150" height="150">
-          <p align="center" style="margin: 0;">kwonsaebom</p>
-        </a>
-      </td>
-      <td style="border: 1px solid #ddd; text-align: center;">
-        <a href="https://github.com/gitlookgitlook">
-          <img src="./public/images/reademe/eunji.png" width="150" height="150">
-          <p align="center" style="margin: 0;">gitlookgitlook</p>
-        </a>
-      </td>
-    </tr>
-    <tr>
-      <td style="border: 1px solid #ddd;">
-        <p align="center" style="margin: 0;">
-          메인 페이지<br/>
-          장바구니 페이지<br/>
-          결제 페이지
-        </p>
-      </td>
-      <td style="border: 1px solid #ddd;">
-        <p align="center" style="margin: 0;">
-          마이 페이지<br/>
-          커뮤니티 페이지<br/>
-          상품등록 페이지
-        </p>
-      </td>
-      <td style="border: 1px solid #ddd;">
-        <p align="center" style="margin: 0;">
-          카테고리 페이지<br/>
-          상품상세 페이지<br/>
-          리뷰 페이지
-        </p>
-      </td>
-      <td style="border: 1px solid #ddd;">
-        <p align="center" style="margin: 0;">
-          회원가입<br/>
-          로그인<br/>
-          검색 페이지
-        </p>
-      </td>
-    </tr>
-</table>
-<br>
-<br>
 
 ### 📆 개발 기간
 
-<b>24.12.19 - 24.12.27 (1주차) : 프로젝트 기획(디자인 기획 및 요구사항 정의서 작성)</b>
-
-<b>24.12.30 - 25.01.03 (2주차) : 마크업 및 더미 데이터를 사용한 동적 렌더링</b>
-
-<b>25.01.06 - 25.01.17 (3, 4주차) : 작성된 요구사항 정의서에 따른 기능 구현</b>
-
-<b>25.01.20 - 25.01.22 (5주차) : 발표 준비 및 최종 배포</b>
+<b>25.03.08 - 진행중 : 앱 라우터로 페이지 마이그레이션 + 데이터 페칭 전략 변경(axios -> fetch API)</b>
