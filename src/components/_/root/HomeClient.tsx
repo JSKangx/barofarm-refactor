@@ -6,7 +6,6 @@ import ProductBig from "components/_/market/ProductBig";
 import { categories } from "constants/market";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { PostType } from "type/board";
 import { ProductType } from "type/product";
 
@@ -25,13 +24,11 @@ export default function HomeClient({
   onMonthProducts,
   posts,
 }: Props) {
-  const router = useRouter();
-
   // 카테고리 아이콘 렌더링
-  const categoryIcons = categories.map((item, index) => (
+  const categoryIcons = categories.map((item) => (
     <Link
       href={item.url}
-      key={index}
+      key={item.url}
       className="relative flex flex-col items-center"
     >
       <div className="relative w-full aspect-square mb-1">
@@ -45,25 +42,26 @@ export default function HomeClient({
       <span>{item.title}</span>
     </Link>
   ));
-  // 게시글 개수에 따라 rows 정하기
-  const howManyRows = Math.ceil(posts?.length / 3);
+
   // 게시글 이미지 렌더링
   const storyImages = (
-    <div
-      className={`grid grid-cols-3 grid-rows-${howManyRows} px-5 gap-1 *:size-[120px] *:object-cover *:cursor-pointer`}
-    >
+    <div className={`grid grid-cols-3 px-5 gap-1`}>
       {/* 최대 9개까지만 필터링 */}
       {posts
         ?.filter((_, index) => index < 9)
-        .map((item, index) => (
-          <Image
-            width={0}
-            height={0}
-            key={index}
-            src={`https://11.fesp.shop${item.image}`}
-            alt={item.content}
-            onClick={() => router.push(`/board/${item._id}`)}
-          />
+        .map((item) => (
+          <Link
+            href={`/board/${item._id}`}
+            key={item._id}
+            className="aspect-square w-full relative"
+          >
+            <Image
+              fill
+              src={`https://11.fesp.shop${item.image}`}
+              alt={item.content}
+              className="object-cover"
+            />
+          </Link>
         ))}
     </div>
   );
