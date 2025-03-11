@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ProductType } from "type/product";
+import { ProductDetailType, ProductType } from "type/product";
 import { fetchApi } from "lib/api";
 
-export const useLikeToggle = (product: ProductType) => {
+export const useLikeToggle = (product: ProductType | ProductDetailType) => {
   const [isLiked, setIsLiked] = useState(!!product?.myBookmarkId);
   const queryClient = useQueryClient();
 

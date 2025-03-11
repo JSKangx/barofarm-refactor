@@ -2,66 +2,43 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { DetailProps } from "app/(market)/product/[_id]/page";
+import { useCategory } from "hook/useCategory";
+import { useLikeToggle } from "hook/useLikeToggle";
 import { useRouter } from "next/navigation";
+import { ProductDetailType } from "type/product";
 
-export default function ProductDetailClient({ params }: DetailProps) {
+type Props = DetailProps & {
+  product: ProductDetailType;
+};
+
+export default function ProductDetailClient({ params, product }: Props) {
   const { _id } = params;
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const {
-    data: product,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["product"],
-    queryFn: async () => {
-      const response = await instance.get(`/products/${_id}`);
-      return response.data.item;
-    },
-  });
-
+  // 이 상품을 세션 스토리지에 저장하는 함수
   if (!!product) {
-    let productData = JSON.parse(sessionStorage.getItem("productData"));
-
-    // 맨 처음 값 초기화
-    if (!Array.isArray(productData)) {
-      productData = [];
-    }
+    // 세션 스토리지에 저장된 데이터가 있다면 가져오고, 아니면 빈 배열을 할당
+    let productData = JSON.parse(sessionStorage.getItem("productData") || "[]");
 
     // 중복된 객체를 제거
     productData = productData.filter(
-      (item) => item && item._id !== product._id
+      (item: ProductDetailType) => item && item._id !== product._id
     );
 
     // 새로운 상품 추가
     productData.unshift(product);
 
     // // 최대 10개까지만 유지
-    // if (productData.length > 10) {
-    //   productData.pop();
-    // }
+    if (productData.length > 10) {
+      productData.pop();
+    }
 
     // 저장
     sessionStorage.setItem("productData", JSON.stringify(productData));
   }
 
   const { isLiked, handleLike } = useLikeToggle(product);
-  const categoryTitle = useCategory(product);
-
-  useEffect(() => {
-    setHeaderContents({
-      leftChild: <HeaderIcon name="back" onClick={() => navigate(-1)} />,
-      title: categoryTitle,
-      rightChild: (
-        <>
-          <HeaderIcon name="home_empty" onClick={() => navigate("/")} />
-          <HeaderIcon name="cart_empty" onClick={() => navigate("/cart")} />
-        </>
-      ),
-    });
-    window.scrollTo(0, 0);
-  }, [product, categoryTitle]);
 
   const purchaseModalRef = useRef();
   const modalRef = useRef();

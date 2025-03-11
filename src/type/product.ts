@@ -110,6 +110,7 @@ export interface ProductDetailType {
   replies: string[];
   bookmarks: number;
   options: string[];
+  myBookmarkId?: number;
 }
 
 export interface Pagination {
@@ -122,5 +123,10 @@ export interface Pagination {
 export interface ProductsResponse {
   item: ProductType[];
   pagination: Pagination;
+  ok: number;
+}
+
+export interface ProductDetailResponse {
+  item: ProductDetailType;
   ok: number;
 }
