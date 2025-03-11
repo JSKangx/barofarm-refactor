@@ -24,7 +24,7 @@
 
 <div>
   <!-- 개발 도구 -->
-  <img src="https://img.shields.io/badge/nextjs-000000?style=for-the-badge&logo=git&logoColor=white">
+  <img src="https://img.shields.io/badge/nextjs-000000?style=for-the-badge&logo=nextjs&logoColor=white">
   <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
   <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
   <img src="https://img.shields.io/badge/figma-666666?style=for-the-badge&logo=figma&logoColor=white">
