@@ -1,5 +1,5 @@
 import Product from "../_/market/Product";
-import { Product as ProductType } from "type/product";
+import { ProductType } from "type/product";
 
 export default function Products({
   productsData,
