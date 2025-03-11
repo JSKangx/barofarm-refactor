@@ -1,4 +1,4 @@
-import ClientCategory from "app/(market)/menu/[category]/ClientPage";
+import ClientCategory from "components/_/market/CategoryClient";
 
 const categoryTitle = [
   { key: "fruit", label: "과일" },

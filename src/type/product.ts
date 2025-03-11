@@ -60,6 +60,58 @@ export interface ProductType {
   myBookmarkId?: number;
 }
 
+export interface ProductDetailType {
+  _id: number;
+  seller_id: number;
+  price: number;
+  shippingFees: number;
+  show: boolean;
+  active: boolean;
+  name: string;
+  quantity: number;
+  buyQuantity: number;
+  mainImages: [
+    {
+      path: string;
+      name: string;
+      originalname: string;
+    }
+  ];
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  extra: {
+    isNew: boolean;
+    isBest: boolean;
+    category: string;
+    sort: number;
+    rating: number;
+    sale: number;
+    saledPrice: number;
+    bestMonth: number[];
+  };
+  seller: {
+    _id: number;
+    email: string;
+    name: string;
+    phone: string;
+    address: string;
+    image: string;
+    extra: {
+      birthday: string;
+      membershipClass: string;
+      addressBook: {
+        id: number;
+        name: string;
+        value: string;
+      }[];
+    };
+  };
+  replies: string[];
+  bookmarks: number;
+  options: string[];
+}
+
 export interface Pagination {
   limit: number;
   page: number;
