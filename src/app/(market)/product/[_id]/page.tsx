@@ -1,9 +1,10 @@
+import ProductDetailClient from "components/_/market/ProductDetailClient";
 import { fetchApi } from "lib/api";
-import { ProductDetailType } from "type/product";
+import { ProductDetailResponse } from "type/product";
 
 export type DetailProps = {
   params: {
-    _id: number;
+    _id: string;
   };
 };
 
@@ -14,11 +15,14 @@ export type DetailProps = {
 
 export default async function ProductDetail({ params }: DetailProps) {
   // data fetching
-  const product: ProductDetailType = await fetchApi(`/products/${params._id}`, {
-    next: {
-      revalidate: 300,
-    },
-  });
+  const product: ProductDetailResponse = await fetchApi(
+    `/products/${params._id}`,
+    {
+      next: {
+        revalidate: 300,
+      },
+    }
+  );
 
-  return;
+  return <ProductDetailClient product={product.item} params={params} />;
 }

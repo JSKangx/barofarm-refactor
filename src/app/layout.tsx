@@ -35,6 +35,7 @@ export default function RootLayout({
           <DynamicHeader />
           <Suspense fallback={<Spinner />}>
             <main className="pb-[100px] pt-[70px]">{children}</main>
+            <aside id="modal-root"></aside>
           </Suspense>
           <Navbar />
         </Providers>

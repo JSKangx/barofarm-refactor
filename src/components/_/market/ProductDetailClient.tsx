@@ -1,14 +1,27 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DetailProps } from "app/(market)/product/[_id]/page";
-import { useCategory } from "hook/useCategory";
+import Modal, { ModalType } from "components/_/market/Modal";
+import PurchaseModal, {
+  PurchaseModalType,
+} from "components/_/market/PurchaseModal";
 import { useLikeToggle } from "hook/useLikeToggle";
+import { fetchApi } from "lib/api";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import { ProductDetailType } from "type/product";
 
+// 타입 정의
 type Props = DetailProps & {
   product: ProductDetailType;
+};
+
+const likeIcon = {
+  default: "/icons/icon_likeHeart_no.svg",
+  active: "/icons/icon_likeHeart_yes.svg",
 };
 
 export default function ProductDetailClient({ params, product }: Props) {
@@ -18,7 +31,7 @@ export default function ProductDetailClient({ params, product }: Props) {
 
   // 이 상품을 세션 스토리지에 저장하는 함수
   if (!!product) {
-    // 세션 스토리지에 저장된 데이터가 있다면 가져오고, 아니면 빈 배열을 할당
+    // 세션 스토리지에 저장된 데이터가 있다면 가져오고, 아니면 빈 배열로 초기화
     let productData = JSON.parse(sessionStorage.getItem("productData") || "[]");
 
     // 중복된 객체를 제거
@@ -40,75 +53,65 @@ export default function ProductDetailClient({ params, product }: Props) {
 
   const { isLiked, handleLike } = useLikeToggle(product);
 
-  const purchaseModalRef = useRef();
-  const modalRef = useRef();
+  const purchaseModalRef = useRef<PurchaseModalType | null>();
+  const modalRef = useRef<ModalType | null>();
 
   const openPurchaseModal = () => {
-    purchaseModalRef.current.open();
+    purchaseModalRef.current?.open();
   };
 
   const openModal = () => {
-    modalRef.current.open();
-    purchaseModalRef.current.close();
+    modalRef.current?.open();
+    purchaseModalRef.current?.close();
   };
 
-  const [count, setCount] = useState(1);
-  // 이 아이템을 결제 페이지로 보낼때 재구조화하기 위해 상태관리
-  const [purchaseItem, setPurchaseItem] = useState();
-  // (1) 아이템 불러와졌을 때, (2) count가 바뀔 때 purchaseItem 상태 업데이트
-  useEffect(() => {
-    setPurchaseItem([
-      {
-        product: {
-          ...product,
-          image: { path: product?.mainImages[0].path },
-        },
-        quantity: count,
-      },
-    ]);
-  }, [product, count]);
+  // 상품 수량 선택 상태관리
+  const [count, setCount] = useState<number>(1);
 
-  const handleCount = (sign) => {
+  // 상품 수량 상태관리
+  const handleCount = (sign: string) => {
     if (sign === "plus") setCount((count) => count + 1);
     else if (sign === "minus" && count > 1) setCount((count) => count - 1);
   };
 
+  // 카트에 상품 추가 함수
   const cartItem = useMutation({
     mutationFn: async () => {
-      const response = await instance.post(`/carts`, {
-        product_id: parseInt(_id),
-        quantity: parseInt(count),
+      const response = await fetchApi(`/carts`, {
+        method: "POST",
+        body: JSON.stringify({
+          product_id: parseInt(_id),
+          quantity: count,
+        }),
       });
       return response.data.item;
     },
     onSuccess: () => {
       openModal();
-      queryClient.invalidateQueries(["cart"]);
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     onError: (error) => {
       console.error("Error adding to cart", error);
     },
   });
 
-  if (isLoading) return <Spinner />;
-  if (isError) return <DataErrorPage />;
-
   return (
     <>
-      <Helmet>
-        <title>{product.name} | 바로Farm</title>
-      </Helmet>
-      <img
-        alt={product.name}
-        className="w-[390px] h-[330px] object-cover"
-        src={`https://11.fesp.shop${product.mainImages[0]?.path}`}
-      />
+      <div className="relative w-[390px] h-[330px]">
+        <Image
+          fill
+          alt={product.name}
+          className="object-cover"
+          src={`https://11.fesp.shop${product.mainImages[0]?.path}`}
+        />
+      </div>
       <section className="p-5 border-b-8 border-b-gray1">
-        <div className="flex items-center gap-[10px] pb-5">
-          <img
+        <div className="relative flex items-center gap-[10px] pb-5 w-[25px] h-[25px]">
+          <Image
+            fill
             alt={product.name}
             src={`https://11.fesp.shop${product.seller.image}`}
-            className="w-[25px] h-[25px] rounded-full"
+            className="rounded-full"
           />
           <span className="font-semibold ">{product.seller.name}</span>
         </div>
@@ -146,7 +149,7 @@ export default function ProductDetailClient({ params, product }: Props) {
           <span className="font-bold">후기 {product.replies.length}개</span>
           {product.replies.length > 0 ? (
             <Link
-              to={`/product/${product._id}/reviews`}
+              href={`/product/${product._id}/reviews`}
               className="font-medium text-sm text-gray5 flex items-center"
             >
               전체보기
@@ -258,8 +261,15 @@ export default function ProductDetailClient({ params, product }: Props) {
           <strong className="font-semibold">장바구니</strong>에 <br /> 상품을
           담았어요
         </p>
-        <img src={cartIcon} className="w-[66px]" />
-        <Link to="/cart">
+        <div className="relative w-[66px]">
+          <Image
+            fill
+            src="/icons/icon_cart_modal.svg"
+            className="w-[66px]"
+            alt="cart icon"
+          />
+        </div>
+        <Link href="/cart">
           <span className="font-light border-b border-b-black">바로가기</span>
         </Link>
       </Modal>
