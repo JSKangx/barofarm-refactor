@@ -10,13 +10,13 @@
 
 ### 🔗 관련 링크
 
-<b> 배포 주소: [바로Farm 링크](https://barofarm.netlify.app/)</b>
+<b> 배포 주소: [바로Farm 링크](https://nextjsbarofarmmigration.vercel.app/)</b>
 
 <b> 피그마(Figma): [피그마 링크](<https://www.figma.com/design/ThTdy4bAI2dDMxaRcDPFAW/4%EB%94%B8%EB%9D%BC---%EB%B0%94%EB%A1%9C%ED%8C%9C(Farm)?node-id=0-1&p=f&t=O2YRQAev0xPoQLzn-0>)</b>
 
 <b> 기능정의서: [기능정의서 링크](https://docs.google.com/spreadsheets/d/12brCwjbi5Jx5qKoXahrMsqFkfG7VHe_1B374fup5QQg/edit?gid=0#gid=0)</b>
 
-<b> 노션(Notion): [노션 링크](https://www.notion.so/4-4-3275fa56674041069f61c44806d2d11e?pvs=4)</b>
+<b> 노션(Notion): [노션 링크](https://extreme-roquefort-6fa.notion.site/React-JavaScript-Next-js-TypeScript-1946f068cb9280bc94b3cecb4ce2e11a?pvs=74)</b>
 
 <br>
 
