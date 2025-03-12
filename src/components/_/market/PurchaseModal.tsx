@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   useRef,
   forwardRef,
@@ -66,7 +67,13 @@ const PurchaseModal = forwardRef<PurchaseModalType, PurchaseModalProps>(
                   className="px-7 py-2 bg-btn-primary rounded-b-[10px] absolute top-0 left-1/2 transform -translate-x-1/2"
                   onClick={close}
                 >
-                  <img src="/icons/icon_down_thin.svg" className="w-6" />
+                  <Image
+                    width={24}
+                    height={24}
+                    alt="close button"
+                    src="/icons/icon_down_thin.svg"
+                    className="w-6"
+                  />
                 </button>
               </form>
               {children}
@@ -78,5 +85,7 @@ const PurchaseModal = forwardRef<PurchaseModalType, PurchaseModalProps>(
     );
   }
 );
+
+PurchaseModal.displayName = "PurchaseModal";
 
 export default PurchaseModal;

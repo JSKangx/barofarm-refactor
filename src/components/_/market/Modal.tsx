@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { forwardRef, useImperativeHandle, useRef } from "react";
 import { createPortal } from "react-dom";
 
@@ -27,7 +28,12 @@ const Modal = forwardRef<ModalType, ModalProps>(({ children }, ref) => {
     >
       <form method="dialog">
         <button className="block ml-auto hover:scale-125">
-          <img src="/icons/icon_x_black.svg" className="w-6 " />
+          <Image
+            width={24}
+            height={24}
+            alt="close icon"
+            src="/icons/icon_x_black.svg"
+          />
         </button>
       </form>
       <div className="flex flex-col justify-center items-center gap-3 py-4">
@@ -37,5 +43,7 @@ const Modal = forwardRef<ModalType, ModalProps>(({ children }, ref) => {
     document.getElementById("modal-root") || document.body
   );
 });
+
+Modal.displayName = "Modal";
 
 export default Modal;

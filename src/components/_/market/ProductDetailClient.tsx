@@ -11,7 +11,7 @@ import { useLikeToggle } from "hook/useLikeToggle";
 import { fetchApi } from "lib/api";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { ProductDetailType } from "type/product";
 
@@ -27,7 +27,7 @@ const likeIcon = {
 
 export default function ProductDetailClient({ params, product }: Props) {
   const { _id } = params;
-  const router = useRouter();
+  // const router = useRouter();
   const queryClient = useQueryClient();
 
   // 이 상품을 세션 스토리지에 저장하는 함수
@@ -181,9 +181,11 @@ export default function ProductDetailClient({ params, product }: Props) {
 
       <footer className="h-[95px] p-5 border-t border-gray1 flex items-center justify-between fixed bottom-0 left-0 right-0 max-w-[390px] mx-auto bg-white">
         <button onClick={handleLike} className="pl-2">
-          <img
+          <Image
+            width={40}
+            height={40}
+            alt="like icon"
             src={isLiked ? likeIcon.active : likeIcon.default}
-            className="w-10"
           />
           <span className="text-sm font-medium">찜</span>
         </button>
@@ -266,3 +268,5 @@ export default function ProductDetailClient({ params, product }: Props) {
     </>
   );
 }
+
+ProductDetailClient.displayName = "ProductDetailClient";
