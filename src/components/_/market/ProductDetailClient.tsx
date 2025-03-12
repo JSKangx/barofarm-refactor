@@ -256,6 +256,7 @@ export default function ProductDetailClient({ params, product }: Props) {
         <div className="relative w-[66px]">
           <Image
             fill
+            sizes="(max-width: 768px) 100vw, 66px"
             src="/icons/icon_cart_modal.svg"
             className="w-[66px]"
             alt="cart icon"

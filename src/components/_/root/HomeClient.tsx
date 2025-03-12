@@ -34,6 +34,7 @@ export default function HomeClient({
       <div className="relative w-full aspect-square mb-1">
         <Image
           fill
+          sizes="(max-width: 640px) 25vw, (max-width: 768px) 20vw, 15vw"
           src={item.image}
           alt={`${item.title} 카테고리`}
           className="object-contain rounded-lg"
@@ -57,6 +58,7 @@ export default function HomeClient({
           >
             <Image
               fill
+              sizes="(max-width: 640px) 33vw, (max-width: 768px) 30vw, 25vw"
               src={`https://11.fesp.shop${item.image}`}
               alt={item.content}
               className="object-cover"

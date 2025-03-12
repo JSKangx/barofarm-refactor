@@ -28,6 +28,7 @@ export default function ProductBig(product: ProductType) {
         <Image
           className="rounded-lg object-cover"
           fill
+          sizes="(max-width: 768px) 100vw, 201px"
           alt={product.name}
           src={`https://11.fesp.shop${product.mainImages[0]?.path}`}
         />
@@ -40,7 +41,8 @@ export default function ProductBig(product: ProductType) {
         >
           <div className="relative size-6">
             <Image
-              fill
+              width={24}
+              height={24}
               src={isLiked ? likeIcon.active : likeIcon.default}
               alt="subscribe button"
             />
