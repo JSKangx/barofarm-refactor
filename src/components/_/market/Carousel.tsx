@@ -30,6 +30,7 @@ export default function Carousel({ width = 390, height, data }: CarouselProps) {
         }}
         onClick={() => router.push(`/product/${item._id}`)}
         className="cursor-pointer w-full"
+        priority
       />
       {/* 상품 정보를 나타내는 자막 */}
       <div className="absolute flex bottom-7 left-3 bg-white/80 rounded-lg px-2 py-1 items-center gap-2">
