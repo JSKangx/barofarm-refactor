@@ -3,13 +3,17 @@
 import { forwardRef, useImperativeHandle, useRef } from "react";
 import { createPortal } from "react-dom";
 
+type ModalProps = {
+  children: React.ReactNode;
+};
+
 export type ModalType = {
   open: () => void;
   close: () => void;
 };
 
-const Modal = forwardRef(({ children }, ref) => {
-  const dialogRef = useRef<HTMLDialogElement | null>();
+const Modal = forwardRef<ModalType, ModalProps>(({ children }, ref) => {
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   useImperativeHandle(ref, () => ({
     open: () => dialogRef.current?.showModal(),

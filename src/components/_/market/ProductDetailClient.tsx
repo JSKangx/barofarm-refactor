@@ -54,8 +54,9 @@ export default function ProductDetailClient({ params, product }: Props) {
 
   const { isLiked, handleLike } = useLikeToggle(product);
 
-  const purchaseModalRef = useRef<PurchaseModalType | null>();
-  const modalRef = useRef<ModalType | null>();
+  // ref의 초기값을 명확히 null로 지정해주고, 참조할 타입을 지정해줘야 타입스크립트가 혼란스러워하지 않는다.
+  const purchaseModalRef = useRef<PurchaseModalType>(null);
+  const modalRef = useRef<ModalType>(null);
 
   const openPurchaseModal = () => {
     purchaseModalRef.current?.open();
