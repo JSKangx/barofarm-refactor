@@ -32,9 +32,9 @@ export default function DynamicHeader() {
         leftChild: (
           <Image
             src="/images/BaroFarmLogo_long.png"
-            width={140}
-            height={40}
-            className="absolute top-1/2 -translate-y-1/2 h-[40px] w-auto"
+            width={200}
+            height={0}
+            className="absolute top-1/2 -translate-y-1/2 h-auto"
             alt="BaroFarm Logo"
           />
         ),
