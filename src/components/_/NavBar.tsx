@@ -35,43 +35,50 @@ export default function Navbar() {
     return exac ? pathname === path : pathname.startsWith(path);
   };
 
-  return (
-    <nav className="h-[100px] border-t border-gray1 flex items-center justify-around fixed bottom-0 left-0 right-0 max-w-[390px] mx-auto bg-white">
-      <NavItem
-        to="/menu"
-        defaultIcon={icons.category.default}
-        activeIcon={icons.category.active}
-        label="카테고리"
-        isActive={isActive("/menu")}
-      />
-      <NavItem
-        to="/board"
-        defaultIcon={icons.community.default}
-        activeIcon={icons.community.active}
-        label="바로파밍"
-        isActive={isActive("/board", false)}
-      />
-      <NavItem
-        to="/"
-        defaultIcon={icons.home.default}
-        activeIcon={icons.home.active}
-        label="홈"
-        isActive={isActive("/")}
-      />
-      <NavItem
-        to="/users/mypage"
-        defaultIcon={icons.profile.default}
-        activeIcon={icons.profile.active}
-        label="프로필"
-        isActive={isActive("/users/mypage")}
-      />
-      <NavItem
-        to="/cart"
-        defaultIcon={icons.cart.default}
-        activeIcon={icons.cart.active}
-        label="장바구니"
-        isActive={isActive("/cart")}
-      />
-    </nav>
-  );
+  if (
+    !pathname.includes("product") &&
+    !pathname.includes("cart") &&
+    !pathname.includes("login") &&
+    !pathname.includes("signup") &&
+    !pathname.includes("payment")
+  )
+    return (
+      <nav className="h-[100px] border-t border-gray1 flex items-center justify-around fixed bottom-0 left-0 right-0 max-w-[390px] mx-auto bg-white">
+        <NavItem
+          to="/menu"
+          defaultIcon={icons.category.default}
+          activeIcon={icons.category.active}
+          label="카테고리"
+          isActive={isActive("/menu")}
+        />
+        <NavItem
+          to="/board"
+          defaultIcon={icons.community.default}
+          activeIcon={icons.community.active}
+          label="바로파밍"
+          isActive={isActive("/board", false)}
+        />
+        <NavItem
+          to="/"
+          defaultIcon={icons.home.default}
+          activeIcon={icons.home.active}
+          label="홈"
+          isActive={isActive("/")}
+        />
+        <NavItem
+          to="/users/mypage"
+          defaultIcon={icons.profile.default}
+          activeIcon={icons.profile.active}
+          label="프로필"
+          isActive={isActive("/users/mypage")}
+        />
+        <NavItem
+          to="/cart"
+          defaultIcon={icons.cart.default}
+          activeIcon={icons.cart.active}
+          label="장바구니"
+          isActive={isActive("/cart")}
+        />
+      </nav>
+    );
 }
