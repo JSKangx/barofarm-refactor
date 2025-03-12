@@ -26,6 +26,7 @@ export const useCategory = (productId: string | string[]) => {
       );
       return response.item;
     },
+    enabled: !!productId,
   });
 
   const category = categoryData?.productCategory?.codes?.find(
