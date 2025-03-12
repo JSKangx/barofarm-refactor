@@ -241,24 +241,7 @@ export default function ProductDetailClient({ params, product }: Props) {
           >
             장바구니
           </button>
-          <button
-            className="flex-1 text-lg text-white bg-btn-primary p-3 rounded-[10px]"
-            onClick={() => {
-              if (!user) {
-                navigateLogin();
-              } else {
-                const currentUrl = window.location.href;
-                navigate("/payment", {
-                  state: {
-                    selectedItems: purchaseItem,
-                    totalFees: product.extra.saledPrice * count,
-                    totalShippingFees: product.shippingFees,
-                    previousUrl: currentUrl,
-                  },
-                });
-              }
-            }}
-          >
+          <button className="flex-1 text-lg text-white bg-btn-primary p-3 rounded-[10px]">
             구매하기
           </button>
         </div>
