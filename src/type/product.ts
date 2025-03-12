@@ -70,6 +70,7 @@ export interface ProductDetailType {
   name: string;
   quantity: number;
   buyQuantity: number;
+  rating?: number;
   mainImages: [
     {
       path: string;
@@ -107,7 +108,18 @@ export interface ProductDetailType {
       }[];
     };
   };
-  replies: string[];
+  replies: {
+    _id: number;
+    user_id: number;
+    user: {
+      _id: number;
+      name: string;
+      image: string;
+    };
+    rating: number;
+    content: string;
+    createdAt: string;
+  }[];
   bookmarks: number;
   options: string[];
   myBookmarkId?: number;

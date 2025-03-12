@@ -46,6 +46,7 @@ const PurchaseModal = forwardRef(({ children }, ref) => {
   return (
     <>
       {mounted &&
+        isVisible &&
         createPortal(
           <dialog
             ref={dialogRef}

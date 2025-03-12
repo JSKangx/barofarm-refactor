@@ -6,6 +6,7 @@ import Modal, { ModalType } from "components/_/market/Modal";
 import PurchaseModal, {
   PurchaseModalType,
 } from "components/_/market/PurchaseModal";
+import ReviewBox from "components/_/market/ReviewBox";
 import { useLikeToggle } from "hook/useLikeToggle";
 import { fetchApi } from "lib/api";
 import Image from "next/image";
@@ -97,18 +98,18 @@ export default function ProductDetailClient({ params, product }: Props) {
 
   return (
     <>
-      <div className="relative w-[390px] h-[330px]">
-        <Image
-          fill
-          alt={product.name}
-          className="object-cover"
-          src={`https://11.fesp.shop${product.mainImages[0]?.path}`}
-        />
-      </div>
+      <Image
+        width={390}
+        height={330}
+        alt={product.name}
+        className="object-cover"
+        src={`https://11.fesp.shop${product.mainImages[0]?.path}`}
+      />
       <section className="p-5 border-b-8 border-b-gray1">
-        <div className="relative flex items-center gap-[10px] pb-5 w-[25px] h-[25px]">
+        <div className="flex items-center gap-[10px] pb-5">
           <Image
-            fill
+            width={25}
+            height={25}
             alt={product.name}
             src={`https://11.fesp.shop${product.seller.image}`}
             className="rounded-full"
@@ -153,7 +154,12 @@ export default function ProductDetailClient({ params, product }: Props) {
               className="font-medium text-sm text-gray5 flex items-center"
             >
               전체보기
-              <img src={forwardIcon} className="w-3" />
+              <Image
+                width={12}
+                height={12}
+                src="/icons/icon_forward.svg"
+                alt="arrow icon"
+              />
             </Link>
           ) : undefined}
         </div>
