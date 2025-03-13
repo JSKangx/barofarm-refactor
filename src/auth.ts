@@ -27,7 +27,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
         // 바로팜 MongoDB 가져오기
         const client = await MongoClient.connect(process.env.MONGODB_URI);
-        const db = client.db("baroFarm");
+        const db = client.db("final04");
 
         try {
           // 이메일로 유저 찾기 쿼리 수행
@@ -74,6 +74,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
-  basePath: "api/auth",
+  basePath: "/api/auth",
   secret: process.env.AUTH_SECRET,
+  debug: true, // 디버그 모드 활성화
 });
