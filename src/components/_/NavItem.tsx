@@ -24,6 +24,7 @@ export default function NavItem({
         height={40}
         alt={`${label}icon`}
         className="size-10"
+        priority
       />
       <span>{label}</span>
     </Link>

@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Providers from "components/providers/RQProvider";
-import DynamicHeader from "components/_/DynamicHeader";
+const DynamicHeader = dynamic(() => import("components/_/DynamicHeader"), {
+  ssr: false,
+  loading: () => <div className="h-[70px]"></div>,
+});
 import Navbar from "components/_/NavBar";
 import { Suspense } from "react";
 import Spinner from "components/Spinner";
+import dynamic from "next/dynamic";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
