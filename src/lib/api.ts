@@ -17,7 +17,7 @@ export async function fetchApi(
   endpoint: string,
   options: FetchApiOptions = {}
 ) {
-  const baseUrl = "https://11.fesp.shop";
+  const baseUrl = process.env.NEXT_PUBLIC_API_HOST;
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",

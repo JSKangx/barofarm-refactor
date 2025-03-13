@@ -1,3 +1,4 @@
+import { auth } from "auth";
 import HomeClient from "components/_/root/HomeClient";
 import { fetchApi } from "lib/api";
 import { PostResponse } from "type/board";
@@ -41,6 +42,8 @@ export default async function Home() {
     .filter((item) => item.extra.bestSeason?.includes(currentMonth))
     .filter((_, index) => index < 6);
 
+  const session = await auth();
+  console.log(session);
   return (
     <HomeClient
       saleProducts={saleProducts}
