@@ -1,5 +1,6 @@
 import NextAuth, { User } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { MongoClient } from "mongodb";
 
 // NextAuth 함수를 호출하여 인증 시스템을 구성하고, 여러 유틸리티를 내보냄
 /*
@@ -20,28 +21,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       // authorize : 사용자 자격 증명을 검증하는 함수
       async authorize(credentials): Promise<User | null> {
-        const users = [
-          {
-            id: "test-user-1",
-            userName: "test1",
-            name: "Test 1",
-            password: "pass",
-            email: "test1@donotreply.com",
-          },
-          {
-            id: "test-user-2",
-            userName: "test2",
-            name: "Test 2",
-            password: "pass",
-            email: "test2@donotreply.com",
-          },
-        ];
-
-        const user = users.find(
-          (user) =>
-            user.userName === credentials.username &&
-            user.password === credentials.password
-        );
+        const client = await MongoClient.connect(process.env.MONGODB_URI);
+        const db = client.db("baroFarm");
 
         return user
           ? { id: user.id, name: user.name, email: user.email }
