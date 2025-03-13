@@ -36,3 +36,10 @@ export interface UserResponseType {
   ok: number;
   item: UserType;
 }
+
+export interface LoginUserType {
+  _id: string;
+  name: string;
+  accessToken: string;
+  refreshToken: string;
+}
