@@ -120,7 +120,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // 기존 사용자 정보도 유지
       session.user = {
         ...session.user,
-        id: token.id,
+        id: token.id as string,
       };
 
       return session;

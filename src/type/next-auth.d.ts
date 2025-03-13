@@ -1,5 +1,5 @@
-import NextAuth, { DefaultSession } from "next-auth";
-import { JWT } from "next-auth/jwt";
+import type NextAuth, { DefaultSession } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
   /**
@@ -27,3 +27,7 @@ declare module "next-auth/jwt" {
     id?: string | number;
   }
 }
+
+// TypeScript를 만족시키기 위한 임시 방편
+const _unused = { NextAuth, JWT };
+console.log(_unused);
