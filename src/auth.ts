@@ -1,8 +1,9 @@
-import NextAuth, { User } from "next-auth";
+import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 // import { MongoClient } from "mongodb";
 // import bcrypt from "bcrypt";
 import { fetchApi } from "lib/api";
+import { UserResponseType } from "type/user";
 
 // NextAuth 함수를 호출하여 인증 시스템을 구성하고, 여러 유틸리티를 내보냄
 /*
@@ -22,7 +23,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       // authorize : 사용자 자격 증명을 검증하는 함수
-      async authorize(credentials): Promise<User | null> {
+      async authorize(credentials) {
         // db에 직접 접근
         // if (!process.env.MONGODB_URI) {
         //   throw new Error("MONGODB_URI 환경 변수가 설정되지 않았습니다.");
@@ -67,6 +68,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         //     id: user._id.toString(),
         //     name: user.name || user.username,
         //     email: user.email,
+        //     accessToken: user.accessToken,
         //   };
         // } catch (error) {
         //   console.error("인증 오류", error);
@@ -75,16 +77,55 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // }
 
         // API 서버를 통한 로그인 요청
-        const user = await fetchApi("/users/login", {
-          method: "POST",
-          body: JSON.stringify(credentials),
-        });
+        try {
+          const response: UserResponseType = await fetchApi("/users/login", {
+            method: "POST",
+            body: JSON.stringify(credentials),
+          });
+          // 로그인 성공 확인
+          if (response.ok === 1) {
+            // NextAuth가 기대하는 형식으로 변환
+            return {
+              id: response.item._id.toString(),
+              name: response.item.name,
+              image: response.item.image,
+              // 토큰 정보도 포함할 수 있음
+              accessToken: response.item.token.accessToken,
+              refreshToken: response.item.token.refreshToken,
+            };
+          }
 
-        if (user) return user;
-        return null;
+          // 로그인 실패시
+          return null;
+        } catch (error) {
+          console.error("로그인 오류:", error);
+          return null;
+        }
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // JWT 토큰에서 세션으로 accessToken 복사
+      session.accessToken = token.accessToken;
+      session.refreshToken = token.refreshToken;
+
+      // 기존 사용자 정보도 유지
+      session.user = {
+        ...session.user,
+        id: token.id,
+      };
+
+      return session;
+    },
+  },
   basePath: "/api/auth",
   secret: process.env.AUTH_SECRET,
   debug: true, // 디버그 모드 활성화
