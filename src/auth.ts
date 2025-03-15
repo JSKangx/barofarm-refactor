@@ -87,8 +87,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // NextAuth가 기대하는 형식으로 변환
             return {
               id: response.item._id.toString(),
-              name: response.item.name,
-              image: response.item.image,
               // 토큰 정보도 포함할 수 있음
               accessToken: response.item.token.accessToken,
               refreshToken: response.item.token.refreshToken,
@@ -120,7 +118,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // 기존 사용자 정보도 유지
       session.user = {
         ...session.user,
-        id: token.id as string,
+        _id: token.sub,
       };
 
       return session;

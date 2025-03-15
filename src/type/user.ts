@@ -37,9 +37,13 @@ export interface UserResponseType {
   item: UserType;
 }
 
+// optional 프로퍼티는 유저 입력 선택사항
 export interface LoginUserType {
   _id: string;
   name: string;
-  accessToken: string;
-  refreshToken: string;
+  email?: string;
+  type: string;
+  image: string;
+  address?: string;
+  phone?: string;
 }
