@@ -6,6 +6,7 @@ import ProductBig from "components/_/market/ProductBig";
 import { categories } from "constants/market";
 import Image from "next/image";
 import Link from "next/link";
+import { useUserStore } from "store/userStore";
 import { PostType } from "type/board";
 import { ProductType } from "type/product";
 

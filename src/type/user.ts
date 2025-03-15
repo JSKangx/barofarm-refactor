@@ -39,11 +39,11 @@ export interface UserResponseType {
 
 // optional 프로퍼티는 유저 입력 선택사항
 export interface LoginUserType {
-  _id: string;
+  _id: number;
   name: string;
   email?: string;
   type: string;
-  image: string;
+  image?: string;
   address?: string;
   phone?: string;
 }

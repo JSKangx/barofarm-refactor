@@ -10,6 +10,8 @@ import Navbar from "components/_/NavBar";
 import { Suspense } from "react";
 import Spinner from "components/Spinner";
 import dynamic from "next/dynamic";
+import { auth } from "auth";
+import UserDataLoader from "components/_/UserDataLoader";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -25,17 +27,19 @@ export const metadata: Metadata = {
   description: "소규모 생산자와 구매자 간의 농수산물 직거래 플랫폼",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
     <html lang="en">
       <body
         className={`${pretendard.variable} antialiased max-w-[390px] mx-auto`}
       >
         <Providers>
+          {session?.user?._id && <UserDataLoader userId={session.user._id} />}
           <DynamicHeader />
           <Suspense fallback={<Spinner />}>
             <main className="pb-[100px] pt-[70px]">{children}</main>
