@@ -1,7 +1,5 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-// import { MongoClient } from "mongodb";
-// import bcrypt from "bcrypt";
 import { fetchApi } from "lib/api";
 import { UserResponseType } from "type/user";
 
@@ -63,10 +61,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.refreshToken = user.refreshToken;
         token.rememberMe = user.rememberMe;
 
-        // rememberMe 값에 따라 토큰 만료 시간 설정
+        // 자동 로그인에 따른 토큰 만료 시간 설정
+        const now = Math.floor(Date.now() / 1000);
         if (user.rememberMe) {
-          token.exp = Math.floor(Date.now() / 1000) + 15 * 24 * 60 * 60;
+          // 15일
+          token.exp = now + 15 * 24 * 60 * 60;
+        } else {
+          // 1시간
+          token.exp = now + 1 * 60 * 60;
         }
+      }
+
+      // 만료 시간 체크
+      const currentTime = Math.floor(Date.now() / 1000);
+      if (token.exp && currentTime > token.exp) {
+        // 만료된 경우 빈 토큰 반환 (로그아웃 효과)
+        return {};
       }
 
       return token;
