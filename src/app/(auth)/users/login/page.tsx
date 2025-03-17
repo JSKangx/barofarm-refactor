@@ -1,41 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { signIn } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useUserStore } from "store/userStore";
 
 export default function LoginPage() {
+  const router = useRouter();
   // 로그인 정보 저장
   const [rememberMe, setRememberMe] = useState(false);
   // 환경변수에서 시크릿 키 가져오기
   const SECRET_PW_KEY = process.env.AUTH_SECRET;
 
   // Zustand store에서 user 상태를 가져옴
-  const user = useUserStore((store) => store.user);
+  const { user } = useUserStore();
+  console.log(user);
   // 로그인된 사용자가 /login 페이지에 접근하는 것을 방지
   // - user가 null인 경우: 로그인되지 않은 상태 => 로그인 페이지 유지
   // - user가 객체인 경우: 이미 로그인된 상태 => 메인 페이지로
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user]);
-
-  useEffect(() => {
-    const savedUserInfo = localStorage.getItem("userInfo");
-
-    // 저장된 데이터가 존재하는 경우
-    if (savedUserInfo) {
-      const { email, password: encryptedPW } = JSON.parse(savedUserInfo);
-      // 암호화된 비밀번호 복호화
-      const decryptedPW = CryptoJS.AES.decrypt(
-        encryptedPW,
-        SECRET_PW_KEY
-      ).toString(CryptoJS.enc.Utf8);
-
-      setValue("email", email); // 이메일 입력란에 저장된 이메일 설정
-      setValue("password", decryptedPW); // 비밀번호 입력란에 저장된 비밀번호 설정
-      setRememberMe(true); // 로그인 정보 저장 체크박스를 체크 상태로 설정
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (user) {
+  //     router.push("/");
+  //   }
+  // }, [user]);
 
   const {
     register,
@@ -47,59 +37,29 @@ export default function LoginPage() {
     reset, // 폼의 초기값을 설정하거나 입력 필드의 값을 초기화하는 함수
   } = useForm({ mode: "onBlur" });
 
-  // store는 zustand에서 상태(state)객체를 나타내기 위해 관용적으로 사용하는 이름
-  const setUser = useUserStore((store) => store.setUser);
-  const axios = useAxiosInstance();
-  const login = useMutation({
-    mutationFn: (formData) => axios.post("/users/login", formData),
-    onSuccess: (res) => {
-      // console.log(res);
+  // 로그인 실행시
+  const onSubmit = async (formData) => {
+    console.log("로그인 시도:", {
+      email: formData.email,
+      password: formData.password,
+      rememberMe: rememberMe.toString(),
+    });
+    // NextAuth signIn 함수 호출
+    const result = await signIn("credentials", {
+      email: formData.email,
+      password: formData.password,
+      redirect: false, // 에러 처리를 위해 리다이렉트는 직접 처리
+      rememberMe: rememberMe.toString(), // credentials 객체는 모든 값을 문자열로 처리.
+    });
 
-      // 로그인 성공 시 유저 정보를 zustand 스토어에 저장
-      const user = res.data.item;
-      setUser({
-        _id: user._id,
-        name: user.name,
-        accessToken: user.token.accessToken,
-        refreshToken: user.token.refreshToken,
-      });
+    console.log("로그인 결과:", result);
 
-      toast.success(user.name + "님, 로그인 되었습니다.");
-
-      // 자동 로그인이 체크되어 있는 경우에만 실행
-      if (rememberMe) {
-        // 비밀번호 암호화
-        const encryptedPW = CryptoJS.AES.encrypt(
-          getValues().password,
-          SECRET_PW_KEY
-        ).toString();
-        // 로컬스토리지에 저장할 객체 생성 (이메일은 평문, 비밀번호는 암호화)
-        const userInfo = {
-          email: getValues().email,
-          password: encryptedPW, // 암호화된 비밀번호 저장
-        };
-
-        localStorage.setItem("userInfo", JSON.stringify(userInfo));
-      }
-
-      // location.state?.from: 로그인이 필요한 페이지에서 전달받은 리다이렉트 경로
-      // ⭐️ 로그인이 필요한 페이지에서는 navigate('/users/login', { state: { from: 현재경로 } })로 전달해야 함
-      // 전달받은 경로가 있으면 해당 페이지로, 없으면 메인("/")으로 이동
-      navigate(location.state?.from || "/");
-    },
-    onError: (err) => {
-      console.error("로그인 에러:", err);
-      // 422: 입력값 검증 오류
-      if (err.response?.data.errors) {
-        err.response?.data.errors.forEach((error) =>
-          setError(error.path, { message: error.msg })
-        );
-      } else {
-        // 403:로그인 실패, 500:서버 에러
-        toast.error(err.response?.data.message || "잠시후 다시 요청하세요.");
-      }
-    },
-  });
+    if (result?.error) {
+      console.error("로그인 에러:", result.error);
+    } else {
+      router.push("/");
+    }
+  };
 
   const handleKakaoLogin = () => {
     // SDK가 초기화되지 않은 경우에만 초기화 진행
@@ -124,27 +84,20 @@ export default function LoginPage() {
 
   return (
     <>
-      <Helmet>
-        <title>로그인 | 바로Farm</title>
-        {/* <meta name="description" content="로그인하시면 더 다양한 서비스를 만나보실 수 있습니다."></meta> */}
-
-        {/* <meta property="og:title" content="로그인 | 바로Farm"></meta>
-        <meta property="og:description" content="로그인하시면 더 다양한 서비스를 만나보실 수 있습니다."></meta>
-        <meta property="og:url" content="https://barofarm.netlify.app/"></meta> */}
-      </Helmet>
-
       <div className="p-5">
         {/* 로고 영역 */}
         <div className="flex justify-center items-center m-auto w-[300px] h-[300px]">
-          <img
-            className="block w-full"
+          <Image
+            width={300}
+            height={300}
+            className="block"
             src="/images/BaroFarmLogo.png"
             alt="바로팜 로고 이미지"
           />
         </div>
 
         {/* 폼 영역 */}
-        <form onSubmit={handleSubmit(login.mutate)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="border-b-2 border-gray2 mb-8 focus-within:border-b-btn-primary">
             <input
               type="email"
@@ -208,7 +161,12 @@ export default function LoginPage() {
             onClick={handleKakaoLogin}
           >
             {/* 이미지가 장식 목적이고 옆의 텍스트가 이미 충분한 의미를 전달하고 있기 때문에 alt = "" 지정*/}
-            <img className="w-8 h-8" src="/images/login/kakaoLogo.png" alt="" />
+            <Image
+              width={32}
+              height={32}
+              src="/images/login/kakaoLogo.png"
+              alt=""
+            />
             <span>카카오로 로그인하기</span>
           </button>
         </div>
@@ -217,7 +175,7 @@ export default function LoginPage() {
           <p className="flex justify-center text-sm gap-1.5 font-medium">
             바로팜이 처음이신가요?
             <Link
-              to="/users/signup"
+              href="/users/signup"
               className="text-btn-primary font-medium hover:font-bold"
             >
               회원가입

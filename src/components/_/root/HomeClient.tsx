@@ -25,6 +25,8 @@ export default function HomeClient({
   onMonthProducts,
   posts,
 }: Props) {
+  const { user } = useUserStore();
+  console.log("store에서 가져온 user: ", user);
   // 카테고리 아이콘 렌더링
   const categoryIcons = categories.map((item) => (
     <Link

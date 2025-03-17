@@ -43,7 +43,7 @@ export default async function Home() {
     .filter((_, index) => index < 6);
 
   const session = await auth();
-  console.log(session);
+  console.log("세션값", session);
   return (
     <HomeClient
       saleProducts={saleProducts}

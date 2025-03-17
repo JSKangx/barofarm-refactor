@@ -21,11 +21,11 @@ export default function UserDataLoader({ userId }: Props) {
         setUser({
           _id: userData._id,
           name: userData.name,
-          email: userData.email || undefined,
+          email: userData.email,
           type: userData.type,
-          image: userData.image || undefined,
-          address: userData.address || undefined,
-          phone: userData.phone || undefined,
+          image: userData.image,
+          address: userData.address,
+          phone: userData.phone,
         });
       } catch (error) {
         console.error("사용자 정보 로드 실패", error);
