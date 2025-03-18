@@ -32,10 +32,17 @@ export interface UserType {
   };
 }
 
+export type UserTypeNoToken = Omit<UserType, "token">;
+
 export interface UserResponseType {
   ok: number;
   item: UserType;
 }
+
+export type UserResponseNoToken = {
+  ok: number;
+  item: UserTypeNoToken;
+};
 
 // optional 프로퍼티는 유저 입력 선택사항
 export interface LoginUserType {

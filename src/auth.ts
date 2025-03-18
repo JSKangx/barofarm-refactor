@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { fetchApi } from "lib/api";
 import { UserResponseType } from "type/user";
+import Kakao from "next-auth/providers/kakao";
 
 // NextAuth 함수를 호출하여 인증 시스템을 구성하고, 여러 유틸리티를 내보냄
 /*
@@ -53,9 +54,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       },
     }),
+    Kakao({
+      clientId: process.env.KAKAO_CLIENT_ID,
+      clientSecret: process.env.KAKAO_CLIENT_SECRET,
+    }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, profile }) {
+      // 최초 로그인시 user가 들어옴.
       if (user) {
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
@@ -72,6 +78,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       }
 
+      // 카카오 로그인 처리
+      if (account && account.provider === "kakao") {
+        token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
+        token.provider = "kakao";
+        token.kakaoId = profile?.id;
+
+        // 카카오 로그인의 경우 만료 시간 설정 (15일)
+        const now = Math.floor(Date.now() / 1000);
+        token.exp = now + 15 * 24 * 60 * 60;
+      }
+
       // 만료 시간 체크
       const currentTime = Math.floor(Date.now() / 1000);
       if (token.exp && currentTime > token.exp) {
@@ -82,9 +100,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      // JWT 토큰에서 세션으로 accessToken 복사
+      // JWT 토큰에서 세션으로 필요한 정보 복사
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
+      session.provider = token.provider;
+
+      // 카카오 로그인인 경우 kakaoId 추가
+      if (token.provider === "kakao") {
+        session.kakaoId = token.kakaoId;
+      }
 
       // 기존 사용자 정보도 유지
       session.user = {
