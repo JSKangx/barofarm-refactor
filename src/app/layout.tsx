@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import "react-toastify/dist/ReactToastify.css";
 import Providers from "components/providers/RQProvider";
 const DynamicHeader = dynamic(() => import("components/_/DynamicHeader"), {
   ssr: false,
@@ -12,6 +13,7 @@ import Spinner from "components/Spinner";
 import dynamic from "next/dynamic";
 import { auth } from "auth";
 import UserDataLoader from "components/_/UserDataLoader";
+import { Slide, ToastContainer } from "react-toastify";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -46,6 +48,14 @@ export default async function RootLayout({
             <aside id="modal-root"></aside>
           </Suspense>
           <Navbar />
+          <ToastContainer
+            position="top-center"
+            hideProgressBar={true}
+            autoClose={2500}
+            closeOnClick={true}
+            theme="light"
+            transition={Slide}
+          />
         </Providers>
       </body>
     </html>

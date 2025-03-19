@@ -51,8 +51,32 @@ export async function POST(request: NextRequest) {
         ok: 1,
         item: userInfo,
       });
+    } else {
+      const statusCode = data.errors ? 422 : 403;
+      console.log(data);
+      return NextResponse.json(
+        {
+          ok: 0,
+          message: data.message,
+          errors: data.errors,
+        },
+        {
+          status: statusCode,
+        }
+      );
     }
   } catch (error) {
     console.error("로그인 오류", error);
+
+    return NextResponse.json(
+      {
+        ok: 0,
+        message:
+          "요청하신 작업 처리에 실패했습니다. 잠시 후 다시 이용해 주시기 바랍니다.",
+      },
+      {
+        status: 500,
+      }
+    );
   }
 }

@@ -34,15 +34,31 @@ export interface UserType {
 
 export type UserTypeNoToken = Omit<UserType, "token">;
 
-export interface UserResponseType {
+export interface ErrorResponse {
+  ok: number;
+  message: string;
+  errors?: [
+    {
+      type: string;
+      value: string;
+      msg: string;
+      path: "email" | "password";
+      location: string;
+    }
+  ];
+}
+
+export type UserResponseType = {
   ok: number;
   item: UserType;
-}
+  status: number;
+} & Partial<ErrorResponse>;
 
 export type UserResponseNoToken = {
   ok: number;
   item: UserTypeNoToken;
-};
+  status: number;
+} & Partial<ErrorResponse>;
 
 // optional 프로퍼티는 유저 입력 선택사항
 export interface LoginUserType {

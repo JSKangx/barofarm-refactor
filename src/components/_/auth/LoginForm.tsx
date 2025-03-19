@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useUserStore } from "store/userStore";
-import { UserResponseNoToken } from "type/user";
+import { ErrorResponse, UserResponseNoToken } from "type/user";
 
 interface LoginFormProps {
   redirectPath?: string;
@@ -16,19 +16,6 @@ interface LoginFormProps {
 interface FormData {
   email: string;
   password: string;
-}
-
-// 커스텀 에러 타입 정의
-interface ApiError extends Error {
-  response?: {
-    data: {
-      message?: string;
-      errors?: Array<{
-        path: string;
-        msg: string;
-      }>;
-    };
-  };
 }
 
 export default function LoginForm({
@@ -52,7 +39,11 @@ export default function LoginForm({
   } = useForm<FormData>({ mode: "onBlur" });
 
   // 일반 로그인 실행
-  const loginMutation = useMutation<UserResponseNoToken, ApiError, FormData>({
+  const loginMutation = useMutation<
+    UserResponseNoToken,
+    ErrorResponse,
+    FormData
+  >({
     mutationFn: async (formData: FormData) => {
       // 라우트 핸들러로 요청 보냄
       const res = await fetch("/api/auth/login", {
@@ -66,11 +57,20 @@ export default function LoginForm({
       });
 
       const data: UserResponseNoToken = await res.json();
-      console.log(data);
+      // 응답이 성공적이지 않은 경우 명시적으로 에러 객체를 구성하여 던짐
+      if (data.ok === 0) {
+        const errorResponse: ErrorResponse = {
+          ok: 0,
+          message: data.message || "로그인에 실패했습니다.",
+          errors: data.errors,
+        };
+        console.log("에러 발생:", errorResponse); // 디버깅용 로그 추가
+        throw errorResponse;
+      }
+
       return data;
     },
     onSuccess: (res) => {
-      console.log(res);
       // 로그인 성공시 유저 정보를 스토어에 저장
       const user = res.item;
       toast.success(user.name + "님, 로그인 되었습니다.");
@@ -91,16 +91,16 @@ export default function LoginForm({
         router.push("/");
       }
     },
-    onError: (err: ApiError) => {
-      console.error("로그인 실패", err);
-      // 422: 입력값 검증 오류
-      if (err.response?.data.errors) {
-        err.response?.data.errors.forEach((error) =>
-          setError(error.path as "email" | "password", { message: error.msg })
-        );
+    onError: (err: ErrorResponse) => {
+      // console.log("로그인 실패 - 전체 에러 객체:", err); // 전체 에러 객체 로깅
+      // console.log("에러 타입:", typeof err); // 에러 타입 확인
+      // console.log("err.errors 존재 여부:", Boolean(err.errors)); // errors 속성 존재 여부 확인
+      // console.log("err.errors:", err.errors);
+      // console.log("err.message:", err.message);
+      if (err.errors) {
+        err.errors.forEach((e) => setError(e.path, { message: e.msg }));
       } else {
-        // 403: 로그인 실패, 500: 서버 에러
-        toast.error(err.response?.data.message || "잠시 후 다시 요청하세요.");
+        toast.error(err.message || "잠시 후 다시 요청하세요.");
       }
     },
   });
