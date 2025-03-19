@@ -6,7 +6,7 @@ export default function useAuth() {
 
   const requireAuth = (returnUrl: string) => {
     const encodedReturnUrl = encodeURIComponent(returnUrl);
-    toast.error("로그인이 필요한 기능입니다.");
+    toast.error("로그인이 필요합니다.");
     router.push(`/users/login?redirect=${encodedReturnUrl}&error=Unauthorized`);
   };
 

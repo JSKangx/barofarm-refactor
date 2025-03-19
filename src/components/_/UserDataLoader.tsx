@@ -6,7 +6,7 @@ import { useUserStore } from "store/userStore";
 import { UserResponseType } from "type/user";
 
 interface Props {
-  userId: string | number;
+  userId?: string;
 }
 
 export default function UserDataLoader({ userId }: Props) {

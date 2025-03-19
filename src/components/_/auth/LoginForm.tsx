@@ -36,8 +36,6 @@ export default function LoginForm({
     handleSubmit,
     formState: { errors },
     setError,
-    getValues, // 현재 폼에 입력된 값들을 가져오는 함수
-    setValue, // 폼 입력 필드에 값을 직접 설정하는 함수
     reset, // 폼의 초기값을 설정하거나 입력 필드의 값을 초기화하는 함수
   } = useForm<FormData>({ mode: "onBlur" });
 

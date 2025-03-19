@@ -11,9 +11,9 @@ import Navbar from "components/_/NavBar";
 import { Suspense } from "react";
 import Spinner from "components/Spinner";
 import dynamic from "next/dynamic";
-import { auth } from "auth";
 import UserDataLoader from "components/_/UserDataLoader";
 import { Slide, ToastContainer } from "react-toastify";
+import { cookies } from "next/headers";
 
 const pretendard = localFont({
   src: "./fonts/PretendardVariable.woff2",
@@ -34,14 +34,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
+  const cookiesStore = cookies();
+  const userId = cookiesStore.get("_id")?.value;
+
   return (
     <html lang="en">
       <body
         className={`${pretendard.variable} antialiased max-w-[390px] mx-auto`}
       >
         <Providers>
-          {session?.user?._id && <UserDataLoader userId={session.user._id} />}
+          {cookiesStore && <UserDataLoader userId={userId} />}
           <DynamicHeader />
           <Suspense fallback={<Spinner />}>
             <main className="pb-[100px] pt-[70px]">{children}</main>

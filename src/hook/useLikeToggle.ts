@@ -31,9 +31,9 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
           target_id: product._id,
         }),
       });
+      console.log(response);
       return response.data.item;
     },
-
     onSuccess: () => {
       setIsLiked(true);
       queryClient.invalidateQueries({

@@ -20,6 +20,20 @@ export async function POST(request: NextRequest) {
       // 토큰을 HTTP-only 쿠키에 저장
       const cookieStore = cookies();
 
+      // _id 저장
+      cookieStore.set("_id", String(data.item._id), {
+        httpOnly: true,
+        // 쿠키의 secure 속성을 개발환경과 프로덕션 환경에서 다르게 설정.
+        // 프로덕션 환경 : true, 개발환경 : false
+        // true는 HTTPS 연결에서만 쿠키가 전송되도록 함.
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax", // CSRF 방지를 위해 strict 대신 lax 사용 (리다이렉트 허용)
+        // 쿠키가 유효한 경로 (도메인의 모든 경로에서 유효함)
+        path: "/",
+        // 로그인 유지면 15일, 아니면 1시간
+        maxAge: rememberMe ? 60 * 60 * 24 * 15 : 60 * 60,
+      });
+
       // 액세스 토큰 저장
       cookieStore.set("accessToken", data.item.token.accessToken, {
         httpOnly: true,
@@ -53,7 +67,6 @@ export async function POST(request: NextRequest) {
       });
     } else {
       const statusCode = data.errors ? 422 : 403;
-      console.log(data);
       return NextResponse.json(
         {
           ok: 0,
