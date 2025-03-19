@@ -27,6 +27,9 @@ export default function LoginForm({
   // 로그인 정보 저장
   const [rememberMe, setRememberMe] = useState(false);
 
+  console.log("redirectPath", redirectPath);
+  console.log("initailError", initialError);
+
   // react-hook-form
   const {
     register,

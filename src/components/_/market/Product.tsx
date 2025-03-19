@@ -1,5 +1,6 @@
 "use client";
 
+import { useLikeToggle } from "hook/useLikeToggle";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ProductType } from "type/product";
@@ -16,7 +17,7 @@ export default function Product(product: ProductType) {
     router.push(`/product/${product._id}`);
   };
 
-  // const { isLiked, handleLike } = useLikeToggle(product);
+  const { isLiked, handleLike } = useLikeToggle(product);
 
   return (
     <section className="flex flex-col cursor-pointer" onClick={goDetailPage}>
@@ -32,17 +33,16 @@ export default function Product(product: ProductType) {
         />
         <button
           className="absolute bottom-3 right-3 bg-white p-1.5 rounded-full shadow-bottom"
-          // onClick={(e) => {
-          //   e.stopPropagation();
-          //   handleLike();
-          // }}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleLike();
+          }}
         >
           <Image
             width={20}
             height={20}
             className="w-5"
-            // src={isLiked ? likeIcon.active : likeIcon.default}
-            src={likeIcon.default}
+            src={isLiked ? likeIcon.active : likeIcon.default}
             alt="like icon"
           />
         </button>
