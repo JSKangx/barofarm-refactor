@@ -15,7 +15,11 @@ export async function getProducts(category?: string) {
   // category 매개변수에 따라 request url 다르게 설정
   const url = category ? `/products?${params.toString()}` : "/products";
   const data: ProductsResponse = await fetchApi(url, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
     next: {
+      tags: category ? ["products", category] : ["products"],
       revalidate: 300,
     },
   });

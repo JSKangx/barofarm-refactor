@@ -3,8 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Products from "components/market/Products";
 import Spinner from "components/Spinner";
-import { fetchApi } from "lib/api";
-import { ProductsResponse } from "type/product";
+import { getProducts } from "server-action";
 
 type CategoryProps = {
   params: {
@@ -18,18 +17,8 @@ export default function ClientCategory({ params }: CategoryProps) {
   const { data: products, isLoading } = useQuery({
     queryKey: ["products", category],
     queryFn: async () => {
-      const params = new URLSearchParams();
-      params.append("custom", JSON.stringify({ "extra.category": category }));
-
-      const data: ProductsResponse = await fetchApi(
-        `/products?${params.toString()}`,
-        {
-          next: {
-            revalidate: 60,
-          },
-        }
-      );
-      return data;
+      const res = await getProducts(category);
+      return res;
     },
     select: (res) => res.item,
   });
