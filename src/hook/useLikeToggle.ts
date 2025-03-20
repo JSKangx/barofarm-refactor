@@ -6,6 +6,7 @@ import { useUserStore } from "store/userStore";
 import { toast } from "react-toastify";
 import { usePathname, useRouter } from "next/navigation";
 import useRequireAuth from "utils/requireAuth";
+import { addBookmark, removeBookmark } from "server-action";
 
 export const useLikeToggle = (product: ProductType | ProductDetailType) => {
   const [isLiked, setIsLiked] = useState(!!product?.myBookmarkId);
@@ -13,6 +14,7 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
   const { user } = useUserStore(); // 유저 정보 가져오기
   const requireAuth = useRequireAuth();
   const pathname = usePathname();
+  const productId = product._id;
 
   useEffect(() => {
     setIsLiked(!!product?.myBookmarkId);
@@ -25,14 +27,7 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
         requireAuth(pathname);
       }
       if (!product) return;
-      const response = await fetchApi(`/bookmarks/product`, {
-        method: "POST",
-        body: JSON.stringify({
-          target_id: product._id,
-        }),
-      });
-      console.log(response);
-      return response.data.item;
+      addBookmark(productId);
     },
     onSuccess: () => {
       setIsLiked(true);
@@ -48,10 +43,7 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
   const { mutate: removeLike } = useMutation({
     mutationFn: async () => {
       if (!product || !product.myBookmarkId) return;
-      const response = await fetchApi(`/bookmarks/${product.myBookmarkId}`, {
-        method: "DELETE",
-      });
-      return response.data;
+      removeBookmark(productId);
     },
     onSuccess: () => {
       setIsLiked(false);

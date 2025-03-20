@@ -1,12 +1,17 @@
 import { auth } from "auth";
 import HomeClient from "components/_/root/HomeClient";
 import { fetchApi } from "lib/api";
+import { cookies } from "next/headers";
 import { PostResponse } from "type/board";
 import { ProductsResponse } from "type/product";
 
 export default async function Home() {
+  const accessToken = cookies().get("accessToken")?.value;
   // 상품 목록 fetching
   const products: ProductsResponse = await fetchApi("/products", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
     next: {
       revalidate: 300,
     },
@@ -42,8 +47,6 @@ export default async function Home() {
     .filter((item) => item.extra.bestSeason?.includes(currentMonth))
     .filter((_, index) => index < 6);
 
-  const session = await auth();
-  console.log("세션값", session);
   return (
     <HomeClient
       saleProducts={saleProducts}

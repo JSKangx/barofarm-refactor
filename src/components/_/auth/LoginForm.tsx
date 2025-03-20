@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useUserStore } from "store/userStore";
-import { ErrorResponse, UserResponseNoToken } from "type/user";
+import { ErrorResponse, UserResponseType } from "type/user";
 
 interface LoginFormProps {
   redirectPath?: string;
@@ -40,11 +40,7 @@ export default function LoginForm({
   } = useForm<FormData>({ mode: "onBlur" });
 
   // 일반 로그인 실행
-  const loginMutation = useMutation<
-    UserResponseNoToken,
-    ErrorResponse,
-    FormData
-  >({
+  const loginMutation = useMutation<UserResponseType, ErrorResponse, FormData>({
     mutationFn: async (formData: FormData) => {
       // 라우트 핸들러로 요청 보냄
       const res = await fetch("/api/auth/login", {
@@ -53,11 +49,10 @@ export default function LoginForm({
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
-          rememberMe,
         }),
       });
 
-      const data: UserResponseNoToken = await res.json();
+      const data: UserResponseType = await res.json();
       // 응답이 성공적이지 않은 경우 명시적으로 에러 객체를 구성하여 던짐
       if (data.ok === 0) {
         const errorResponse: ErrorResponse = {
@@ -93,11 +88,6 @@ export default function LoginForm({
       }
     },
     onError: (err: ErrorResponse) => {
-      // console.log("로그인 실패 - 전체 에러 객체:", err); // 전체 에러 객체 로깅
-      // console.log("에러 타입:", typeof err); // 에러 타입 확인
-      // console.log("err.errors 존재 여부:", Boolean(err.errors)); // errors 속성 존재 여부 확인
-      // console.log("err.errors:", err.errors);
-      // console.log("err.message:", err.message);
       if (err.errors) {
         err.errors.forEach((e) => setError(e.path, { message: e.msg }));
       } else {
