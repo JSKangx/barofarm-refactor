@@ -6,7 +6,6 @@ import ProductBig from "components/_/market/ProductBig";
 import { categories } from "constants/market";
 import Image from "next/image";
 import Link from "next/link";
-import { useUserStore } from "store/userStore";
 import { PostType } from "type/board";
 import { ProductType } from "type/product";
 
@@ -25,8 +24,6 @@ export default function HomeClient({
   onMonthProducts,
   posts,
 }: Props) {
-  const { user } = useUserStore();
-
   // 카테고리 아이콘 렌더링
   const categoryIcons = categories.map((item) => (
     <Link

@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProductDetailType, ProductType } from "type/product";
-import { fetchApi } from "lib/api";
 import { useUserStore } from "store/userStore";
-import { toast } from "react-toastify";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import useRequireAuth from "utils/requireAuth";
 import { addBookmark, removeBookmark } from "server-action";
 

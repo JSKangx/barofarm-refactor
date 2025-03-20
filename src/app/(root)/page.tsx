@@ -1,4 +1,3 @@
-import { auth } from "auth";
 import HomeClient from "components/_/root/HomeClient";
 import { fetchApi } from "lib/api";
 import { cookies } from "next/headers";
