@@ -13,6 +13,7 @@ export default async function Home() {
       Authorization: `Bearer ${accessToken}`,
     },
     next: {
+      tags: ["products"],
       revalidate: 300,
     },
   });

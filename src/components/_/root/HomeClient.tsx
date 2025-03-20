@@ -1,11 +1,9 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import Carousel from "components/_/market/Carousel";
 import Product from "components/_/market/Product";
 import ProductBig from "components/_/market/ProductBig";
 import { categories } from "constants/market";
-import { fetchApi } from "lib/api";
 import Image from "next/image";
 import Link from "next/link";
 import { useUserStore } from "store/userStore";

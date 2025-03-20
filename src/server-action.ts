@@ -4,6 +4,7 @@ import { fetchApi } from "lib/api";
 import { ProductsResponse } from "type/product";
 import { signIn as _signIn, signOut as _signOut } from "auth";
 import { cookies } from "next/headers";
+import { revalidateTag } from "next/cache";
 
 const accessToken = cookies().get("accessToken")?.value;
 
@@ -33,6 +34,10 @@ export async function addBookmark(productId: number) {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+
+    // Next.js 캐시 무효화
+    revalidateTag("products");
+    console.log(res);
     return res.data;
   } catch (e) {
     console.error(e);
@@ -48,6 +53,9 @@ export async function removeBookmark(productId: number) {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+    // Next.js 캐시 무효화
+    revalidateTag("products");
+    console.log(res);
     return res.data;
   } catch (e) {
     console.error(e);

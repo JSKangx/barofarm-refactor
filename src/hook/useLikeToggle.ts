@@ -14,7 +14,6 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
   const { user } = useUserStore(); // 유저 정보 가져오기
   const requireAuth = useRequireAuth();
   const pathname = usePathname();
-  const productId = product._id;
 
   useEffect(() => {
     setIsLiked(!!product?.myBookmarkId);
@@ -27,12 +26,17 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
         requireAuth(pathname);
       }
       if (!product) return;
+      const productId = product._id;
       addBookmark(productId);
     },
     onSuccess: () => {
       setIsLiked(true);
       queryClient.invalidateQueries({
         queryKey: ["products", product.extra.category],
+      });
+      // 전체 products 쿼리 무효화
+      queryClient.invalidateQueries({
+        queryKey: ["products"],
       });
     },
     onError: (error) => {
@@ -43,12 +47,17 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
   const { mutate: removeLike } = useMutation({
     mutationFn: async () => {
       if (!product || !product.myBookmarkId) return;
-      removeBookmark(productId);
+      const myBookmarkId = product.myBookmarkId;
+      removeBookmark(myBookmarkId);
     },
     onSuccess: () => {
       setIsLiked(false);
       queryClient.invalidateQueries({
         queryKey: ["products", product.extra.category],
+      });
+      // 전체 products 쿼리 무효화
+      queryClient.invalidateQueries({
+        queryKey: ["products"],
       });
     },
     onError: (error) => {
