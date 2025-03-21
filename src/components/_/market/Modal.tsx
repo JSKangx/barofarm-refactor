@@ -1,7 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { forwardRef, useImperativeHandle, useRef } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 
 type ModalProps = {
@@ -15,11 +21,22 @@ export type ModalType = {
 
 const Modal = forwardRef<ModalType, ModalProps>(({ children }, ref) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // 컴포넌트가 마운트된 이후에 document 객체에 접근해야 함
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   useImperativeHandle(ref, () => ({
     open: () => dialogRef.current?.showModal(),
     close: () => dialogRef.current?.close(),
   }));
+
+  if (!mounted) {
+    return null;
+  }
 
   return createPortal(
     <dialog
