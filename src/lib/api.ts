@@ -104,7 +104,7 @@ export async function fetchApi(
     });
 
     // 401 에러가 발생하면 리프레시 시도
-    if (response.status === 401 && accessToken) {
+    if (response.status === 401) {
       const refreshed = await refreshAccessToken();
 
       if (refreshed) {
