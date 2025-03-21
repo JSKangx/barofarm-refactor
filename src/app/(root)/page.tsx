@@ -19,6 +19,7 @@ export default async function Home() {
   // 게시글 목록 fetching
   const posts: PostResponse = await fetchApi("/posts?type=community", {
     next: {
+      tags: ["posts", "community"],
       revalidate: 300,
     },
   });

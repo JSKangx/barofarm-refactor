@@ -22,6 +22,7 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
     mutationFn: async () => {
       if (!user) {
         requireAuth(pathname);
+        return;
       }
       if (!product) return;
       const productId = product._id;
