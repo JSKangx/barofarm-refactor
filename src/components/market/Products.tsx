@@ -6,7 +6,6 @@ export default function Products({
 }: {
   productsData: ProductType[] | undefined;
 }) {
-  console.log("productsData :", productsData);
   return (
     <div className="grid grid-cols-2 justify-between p-5 gap-5">
       {productsData?.map((product) => (

@@ -47,16 +47,15 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
     },
     onSuccess: async () => {
       setIsLiked(true);
-      // 클라이언트측 쿼리 무효화
+      console.log("찜추가 성공");
+
+      // 클라이언트측 캐시 무효화
       queryClient.invalidateQueries({
         queryKey: ["products", product.extra.category],
       });
-      queryClient.invalidateQueries({
-        queryKey: ["products"],
-      });
 
       // 서버측 캐시 무효화
-      await revalidateProductsCache();
+      await revalidateProductsCache(product.extra.category);
     },
     onError: (error) => {
       try {
@@ -90,16 +89,13 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
     },
     onSuccess: async () => {
       setIsLiked(false);
+      console.log("찜삭제 성공");
       // 클라이언트측 캐시 무효화
       queryClient.invalidateQueries({
         queryKey: ["products", product.extra.category],
       });
-      queryClient.invalidateQueries({
-        queryKey: ["products"],
-      });
-
       // 서버측 캐시 무효화
-      await revalidateProductsCache();
+      await revalidateProductsCache(product.extra.category);
     },
     onError: (error) => {
       try {
