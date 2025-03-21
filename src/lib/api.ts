@@ -13,7 +13,7 @@ export type FetchApiOptions = RequestInit & {
 };
 
 // baseURL
-const baseUrl = process.env.NEXT_PUBLIC_API_HOST;
+const baseUrl = process.env.API_HOST;
 
 // delay 유틸리티 함수
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

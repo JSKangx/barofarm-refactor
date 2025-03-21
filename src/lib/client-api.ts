@@ -8,7 +8,7 @@ export async function clientFetchApi(
   endpoint: string,
   options: FetchApiOptions = {}
 ) {
-  const response = await fetchApi(endpoint, options);
+  const response: Response = await fetchApi(endpoint, options);
 
   // 401 응답 처리 (로그인 페이지로 리디렉션)
   if (response.status === 401) {
