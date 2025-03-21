@@ -11,8 +11,7 @@ import { useLikeToggle } from "hook/useLikeToggle";
 import { clientFetchApi } from "lib/client-api";
 import Image from "next/image";
 import Link from "next/link";
-// import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ProductDetailType } from "type/product";
 
 // 타입 정의
@@ -27,30 +26,33 @@ const likeIcon = {
 
 export default function ProductDetailClient({ params, product }: Props) {
   const { _id } = params;
-  // const router = useRouter();
   const queryClient = useQueryClient();
 
-  // 이 상품을 세션 스토리지에 저장하는 함수
-  if (!!product) {
-    // 세션 스토리지에 저장된 데이터가 있다면 가져오고, 아니면 빈 배열로 초기화
-    let productData = JSON.parse(sessionStorage.getItem("productData") || "[]");
+  useEffect(() => {
+    // 이 상품을 세션 스토리지에 저장하는 함수
+    if (!!product) {
+      // 세션 스토리지에 저장된 데이터가 있다면 가져오고, 아니면 빈 배열로 초기화
+      let productData = JSON.parse(
+        sessionStorage.getItem("productData") || "[]"
+      );
 
-    // 중복된 객체를 제거
-    productData = productData.filter(
-      (item: ProductDetailType) => item && item._id !== product._id
-    );
+      // 중복된 객체를 제거
+      productData = productData.filter(
+        (item: ProductDetailType) => item && item._id !== product._id
+      );
 
-    // 새로운 상품 추가
-    productData.unshift(product);
+      // 새로운 상품 추가
+      productData.unshift(product);
 
-    // // 최대 10개까지만 유지
-    if (productData.length > 10) {
-      productData.pop();
+      // // 최대 10개까지만 유지
+      if (productData.length > 10) {
+        productData.pop();
+      }
+
+      // 저장
+      sessionStorage.setItem("productData", JSON.stringify(productData));
     }
-
-    // 저장
-    sessionStorage.setItem("productData", JSON.stringify(productData));
-  }
+  }, [product]);
 
   const { isLiked, handleLike } = useLikeToggle(product);
 
