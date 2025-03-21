@@ -30,8 +30,8 @@ export async function POST(request: NextRequest) {
         sameSite: "lax", // CSRF 방지를 위해 strict 대신 lax 사용 (리다이렉트 허용)
         // 쿠키가 유효한 경로 (도메인의 모든 경로에서 유효함)
         path: "/",
-        // 로그인 유지면 15일, 아니면 1시간
-        maxAge: rememberMe ? 60 * 60 * 24 * 15 : 60 * 60,
+        // 로그인 유지면 15일, 아니면 1일
+        maxAge: rememberMe ? 60 * 60 * 24 * 15 : 60 * 60 * 24,
       });
 
       // 액세스 토큰 저장

@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProductDetailType, ProductType } from "type/product";
 import { useUserStore } from "store/userStore";
 import { usePathname } from "next/navigation";
-import useRequireAuth from "utils/requireAuth";
+import useRequireAuth from "hook/useAuth";
 import { addBookmark, removeBookmark } from "server-action";
 
 export const useLikeToggle = (product: ProductType | ProductDetailType) => {

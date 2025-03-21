@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+
 // RequestInit : fetch API의 기본 옵션 타입
 type FetchApiOptions = RequestInit & {
   next?: {
@@ -8,8 +10,22 @@ type FetchApiOptions = RequestInit & {
   delay?: number; // delay 옵션 추가
 };
 
+// baseURL
+const baseUrl = process.env.NEXT_PUBLIC_API_HOST;
+
 // delay 유틸리티 함수
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// 리프레시 토큰으로 액세스 토큰 갱신하는 함수
+async function refreshAccessToken() {
+  try {
+    const refreshToken = cookies().get("refreshToken")?.value;
+    if (!refreshToken) {
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 // 공통 fetch 유틸리티
 // fetch api처럼 매개변수로 url과 options 객체를 받는다.
@@ -17,7 +33,6 @@ export async function fetchApi(
   endpoint: string,
   options: FetchApiOptions = {}
 ) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_HOST;
   const headers = {
     "Content-Type": "application/json",
     Accept: "application/json",
