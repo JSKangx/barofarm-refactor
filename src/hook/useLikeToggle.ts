@@ -64,7 +64,7 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
         const errorObj = JSON.parse(errorMessage);
         console.error("찜 추가 실패: ", errorObj);
       } catch (parseError) {
-        console.error("에러 파싱 실패", error);
+        console.error("에러 파싱 실패", parseError);
       }
     },
   });
@@ -104,7 +104,7 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
         const errorObj = JSON.parse(errorMessage);
         console.error("찜 추가 실패: ", errorObj);
       } catch (parseError) {
-        console.error("에러 파싱 실패", error);
+        console.error("에러 파싱 실패", parseError);
       }
     },
   });

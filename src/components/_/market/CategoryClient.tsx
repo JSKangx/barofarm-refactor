@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import Products from "components/market/Products";
 import Spinner from "components/Spinner";
 import { clientFetchApi } from "lib/client-api";
-import { getProducts } from "server-action";
 
 type CategoryProps = {
   params: {
