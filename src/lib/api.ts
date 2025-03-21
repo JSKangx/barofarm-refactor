@@ -1,6 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 // RequestInit : fetch API의 기본 옵션 타입
 export type FetchApiOptions = RequestInit & {
@@ -119,6 +120,12 @@ export async function fetchApi(
           cache,
           headers, // 커스텀 headers를 명시적으로 전달해야 기본 headers와 병합됨.
         });
+      } else {
+        // 클라이언트에게 status를 401로 반환해서 리다이렉트 시키게 함
+        return {
+          ok: 0,
+          status: 401,
+        };
       }
     }
 

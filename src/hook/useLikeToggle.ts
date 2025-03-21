@@ -21,10 +21,6 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
   // 북마크 추가
   const { mutate: addLike } = useMutation({
     mutationFn: async () => {
-      if (!user) {
-        requireAuth(pathname);
-        return;
-      }
       if (!product) return;
       const productId = product._id;
       const res = await clientFetchApi("/bookmarks/product", {
@@ -42,7 +38,6 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
           })
         );
       }
-      console.log(res);
       return res.data;
     },
     onSuccess: async () => {
