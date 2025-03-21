@@ -26,44 +26,9 @@ export async function getProducts(category?: string) {
   return data;
 }
 
-// 북마크 추가 (쿠키에 담긴 토큰을 사용하기 위해 서버액션으로 정의)
-export async function addBookmark(productId: number) {
-  try {
-    const res = await fetchApi("/bookmarks/product", {
-      method: "POST",
-      body: JSON.stringify({
-        target_id: productId,
-      }),
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    // Next.js 캐시 무효화
-    revalidateTag("products");
-    console.log(res);
-    return res.data;
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-// 북마크 해제
-export async function removeBookmark(productId: number) {
-  try {
-    const res = await fetchApi(`/bookmarks/${productId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    // Next.js 캐시 무효화
-    revalidateTag("products");
-    console.log(res);
-    return res.data;
-  } catch (e) {
-    console.error(e);
-  }
+// products 쿼리 키를 가진 데이터 캐시를 무효화하는 함수
+export async function revalidateProductsCache() {
+  revalidateTag("products");
 }
 
 // NextAuth의 로직을 클라이언트에서 사용하도록 함수 래핑

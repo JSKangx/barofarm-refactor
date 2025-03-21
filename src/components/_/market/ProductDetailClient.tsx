@@ -8,7 +8,7 @@ import PurchaseModal, {
 } from "components/_/market/PurchaseModal";
 import ReviewBox from "components/_/market/ReviewBox";
 import { useLikeToggle } from "hook/useLikeToggle";
-import { fetchApi } from "lib/api";
+import { clientFetchApi } from "lib/client-api";
 import Image from "next/image";
 import Link from "next/link";
 // import { useRouter } from "next/navigation";
@@ -79,7 +79,7 @@ export default function ProductDetailClient({ params, product }: Props) {
   // 카트에 상품 추가 함수
   const cartItem = useMutation({
     mutationFn: async () => {
-      const response = await fetchApi(`/carts`, {
+      const response = await clientFetchApi(`/carts`, {
         method: "POST",
         body: JSON.stringify({
           product_id: parseInt(_id),

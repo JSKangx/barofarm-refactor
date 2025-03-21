@@ -3,14 +3,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProductDetailType, ProductType } from "type/product";
 import { useUserStore } from "store/userStore";
 import { usePathname } from "next/navigation";
-import useRequireAuth from "hook/useAuth";
-import { addBookmark, removeBookmark } from "server-action";
+import useAuth from "hook/useAuth";
+import { clientFetchApi } from "lib/client-api";
+import { revalidateProductsCache } from "server-action";
 
 export const useLikeToggle = (product: ProductType | ProductDetailType) => {
   const [isLiked, setIsLiked] = useState(!!product?.myBookmarkId);
   const queryClient = useQueryClient();
   const { user } = useUserStore(); // 유저 정보 가져오기
-  const requireAuth = useRequireAuth();
+  const requireAuth = useAuth();
   const pathname = usePathname();
 
   useEffect(() => {
@@ -26,20 +27,46 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
       }
       if (!product) return;
       const productId = product._id;
-      addBookmark(productId);
+      const res = await clientFetchApi("/bookmarks/product", {
+        method: "POST",
+        body: JSON.stringify({
+          target_id: productId,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error(
+          JSON.stringify({
+            message: res.message,
+            errors: res.errors,
+          })
+        );
+      }
+      console.log(res);
+      return res.data;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       setIsLiked(true);
+      // 클라이언트측 쿼리 무효화
       queryClient.invalidateQueries({
         queryKey: ["products", product.extra.category],
       });
-      // 전체 products 쿼리 무효화
       queryClient.invalidateQueries({
         queryKey: ["products"],
       });
+
+      // 서버측 캐시 무효화
+      await revalidateProductsCache();
     },
     onError: (error) => {
-      console.error("찜 추가 실패: ", error);
+      try {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        const errorObj = JSON.parse(errorMessage);
+        console.error("찜 추가 실패: ", errorObj);
+      } catch (parseError) {
+        console.error("에러 파싱 실패", error);
+      }
     },
   });
 
@@ -47,20 +74,42 @@ export const useLikeToggle = (product: ProductType | ProductDetailType) => {
     mutationFn: async () => {
       if (!product || !product.myBookmarkId) return;
       const myBookmarkId = product.myBookmarkId;
-      removeBookmark(myBookmarkId);
+      const res = await clientFetchApi(`/bookmarks/${myBookmarkId}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        throw new Error(
+          JSON.stringify({
+            message: res.message,
+            errors: res.errors,
+          })
+        );
+      }
+      console.log(res);
+      return res.data;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       setIsLiked(false);
+      // 클라이언트측 캐시 무효화
       queryClient.invalidateQueries({
         queryKey: ["products", product.extra.category],
       });
-      // 전체 products 쿼리 무효화
       queryClient.invalidateQueries({
         queryKey: ["products"],
       });
+
+      // 서버측 캐시 무효화
+      await revalidateProductsCache();
     },
     onError: (error) => {
-      console.error("좋아요 삭제 실패: ", error);
+      try {
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        const errorObj = JSON.parse(errorMessage);
+        console.error("찜 추가 실패: ", errorObj);
+      } catch (parseError) {
+        console.error("에러 파싱 실패", error);
+      }
     },
   });
 

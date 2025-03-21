@@ -1,7 +1,9 @@
+"use server";
+
 import { cookies } from "next/headers";
 
 // RequestInit : fetch API의 기본 옵션 타입
-type FetchApiOptions = RequestInit & {
+export type FetchApiOptions = RequestInit & {
   next?: {
     revalidate?: number | false;
     tags?: string[];
@@ -21,9 +23,43 @@ async function refreshAccessToken() {
   try {
     const refreshToken = cookies().get("refreshToken")?.value;
     if (!refreshToken) {
+      return false;
+    }
+
+    // accessToken 갱신 요청
+    interface authRes {
+      ok: number;
+      accessToken?: string;
+      message?: string;
+      errorName?: "EmptyAuthorization | TokenExpiredError | JsonWebTokenError";
+    }
+    const res: authRes = await fetchApi("/auth/refresh", {
+      headers: {
+        Authorization: `Bearer ${refreshToken}`,
+      },
+    });
+
+    // 새로운 accessToken 저장
+    if (res.accessToken) {
+      cookies().set("accessToken", res.accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60 * 24,
+      });
+
+      return true;
+    } else {
+      const errors = {
+        message: res.message,
+        errorName: res.errorName,
+      };
+      throw new Error(JSON.stringify(errors));
     }
   } catch (err) {
-    console.error(err);
+    console.error("토큰 갱신 중 오류 발생", err);
+    return false;
   }
 }
 
@@ -33,12 +69,19 @@ export async function fetchApi(
   endpoint: string,
   options: FetchApiOptions = {}
 ) {
-  const headers = {
+  // 기본 헤더 설정
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
     Accept: "application/json",
     "client-id": "final04",
-    ...(options.headers || {}),
+    ...((options.headers as Record<string, string>) || {}),
   };
+
+  // 액세스 토큰이 쿠키에 있으면 자동으로 헤더에 추가
+  const accessToken = cookies().get("accessToken")?.value;
+  if (accessToken) {
+    headers.Authorization = `Bearer ${accessToken}`;
+  }
 
   // delay 옵션이 있으면 지정된 시간만큼 지연
   if (options.delay && options.delay > 0) {
@@ -51,14 +94,41 @@ export async function fetchApi(
   // Next.js data fetching 관련 옵션 추출
   const { next, cache, ...restOptions } = options;
 
-  // Next.js 옵션을 fetch에 전달
-  const response = await fetch(url, {
-    ...restOptions,
-    next,
-    cache,
-    headers, // 커스텀 headers를 명시적으로 전달해야 기본 headers와 병합됨.
-  });
+  try {
+    // 첫번째 요청 시도
+    let response = await fetch(url, {
+      ...restOptions,
+      next,
+      cache,
+      headers, // 커스텀 headers를 명시적으로 전달해야 기본 headers와 병합됨.
+    });
 
-  // 호출할 때는 바로 data를 받을 수 있음
-  return response.json();
+    // 401 에러가 발생하면 리프레시 시도
+    if (response.status === 401 && accessToken) {
+      const refreshed = await refreshAccessToken();
+
+      if (refreshed) {
+        // 새로 발급받은 토큰으로 헤더 업데이트
+        const newAccessToken = cookies().get("accessToken")?.value;
+        headers.Authorization = `Bearer ${newAccessToken}`;
+
+        // 새 토큰으로 다시 요청
+        response = await fetch(url, {
+          ...restOptions,
+          next,
+          cache,
+          headers, // 커스텀 headers를 명시적으로 전달해야 기본 headers와 병합됨.
+        });
+      }
+    }
+
+    // 결과 반환
+    return response.json();
+  } catch (error) {
+    console.error("API 요청 중 오류 발생", error);
+    return {
+      error: "요청 처리 중 오류가 발생했습니다.",
+      status: 500,
+    };
+  }
 }

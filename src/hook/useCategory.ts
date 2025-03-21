@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchApi } from "lib/api";
+import { clientFetchApi } from "lib/client-api";
 import { ProductDetailResponse } from "type/product";
 
 type Code = {
@@ -13,7 +13,7 @@ export const useCategory = (productId: string | string[]) => {
   const { data: categoryData } = useQuery({
     queryKey: ["codes", "productCategory"],
     queryFn: async () => {
-      const response = await fetchApi(`/codes/productCategory`);
+      const response = await clientFetchApi(`/codes/productCategory`);
       return response.item;
     },
   });
@@ -21,7 +21,7 @@ export const useCategory = (productId: string | string[]) => {
   const { data: product } = useQuery({
     queryKey: ["products", `${productId}`],
     queryFn: async () => {
-      const response: ProductDetailResponse = await fetchApi(
+      const response: ProductDetailResponse = await clientFetchApi(
         `/products/${productId}`
       );
       return response.item;

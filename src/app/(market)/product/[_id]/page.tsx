@@ -1,5 +1,5 @@
 import ProductDetailClient from "components/_/market/ProductDetailClient";
-import { fetchApi } from "lib/api";
+import { clientFetchApi } from "lib/client-api";
 import { ProductDetailResponse } from "type/product";
 
 export type DetailProps = {
@@ -15,7 +15,7 @@ export type DetailProps = {
 
 export default async function ProductDetail({ params }: DetailProps) {
   // data fetching
-  const product: ProductDetailResponse = await fetchApi(
+  const product: ProductDetailResponse = await clientFetchApi(
     `/products/${params._id}`,
     {
       next: {

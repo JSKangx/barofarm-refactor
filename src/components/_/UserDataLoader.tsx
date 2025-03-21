@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchApi } from "lib/api";
+import { clientFetchApi } from "lib/client-api";
 import { useEffect } from "react";
 import { useUserStore } from "store/userStore";
 import { UserResponseType } from "type/user";
@@ -16,7 +16,7 @@ export default function UserDataLoader({ userId }: Props) {
   useEffect(() => {
     async function loadUserData() {
       try {
-        const res: UserResponseType = await fetchApi(`/users/${userId}`);
+        const res: UserResponseType = await clientFetchApi(`/users/${userId}`);
         const userData = res.item;
         setUser({
           _id: userData._id,
