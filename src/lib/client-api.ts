@@ -12,7 +12,7 @@ export async function clientFetchApi(
     // fetchApi 함수를 호출
     const response = await fetchApi(endpoint, options);
 
-    // 만약 서버에서 처리되지 않은 401 응답이 있다면
+    // 서버에서 401 응답을 보냈다면
     if (response.status === 401) {
       const returnUrl = encodeURIComponent(window.location.pathname);
       toast.error("로그인이 필요합니다.");

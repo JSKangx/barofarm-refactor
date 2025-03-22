@@ -25,7 +25,9 @@ const Modal = forwardRef<ModalType, ModalProps>(({ children }, ref) => {
 
   // 컴포넌트가 마운트된 이후에 document 객체에 접근해야 함
   useEffect(() => {
+    // 컴포넌트가 마운트될 때 상태를 true로 설정
     setMounted(true);
+    // 컴포넌트가 언마운트될 때 상태를 false로 설정
     return () => setMounted(false);
   }, []);
 

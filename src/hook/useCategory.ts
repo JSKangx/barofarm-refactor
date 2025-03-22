@@ -14,6 +14,7 @@ export const useCategory = (productId: string | string[]) => {
     queryKey: ["codes", "productCategory"],
     queryFn: async () => {
       const response = await clientFetchApi(`/codes/productCategory`);
+      console.log(response);
       return response.item;
     },
   });

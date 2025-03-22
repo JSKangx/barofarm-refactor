@@ -28,19 +28,27 @@ async function refreshAccessToken() {
     }
 
     // accessToken 갱신 요청
-    interface authRes {
-      ok: number;
+    interface AuthRes extends Omit<Response, "ok"> {
+      ok: number | boolean;
       accessToken?: string;
       message?: string;
       errorName?: "EmptyAuthorization | TokenExpiredError | JsonWebTokenError";
     }
-    const res: authRes = await fetchApi("/auth/refresh", {
+    const response: AuthRes = await fetch(`${baseUrl}/auth/refresh`, {
       headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "client-id": "final04",
         Authorization: `Bearer ${refreshToken}`,
       },
     });
 
-    // 새로운 accessToken 저장
+    // 토큰 갱신 요청 실패시 false 반환
+    if (!response.ok) return false;
+
+    const res = await response.json();
+
+    // 토큰 갱신 성공시 새로운 accessToken 저장
     if (res.accessToken) {
       cookies().set("accessToken", res.accessToken, {
         httpOnly: true,

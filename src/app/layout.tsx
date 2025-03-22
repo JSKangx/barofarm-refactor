@@ -36,6 +36,7 @@ export default async function RootLayout({
 }>) {
   const cookiesStore = cookies();
   const userId = cookiesStore.get("_id")?.value;
+  console.log(userId);
 
   return (
     <html lang="en">
