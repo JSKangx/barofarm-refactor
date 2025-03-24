@@ -34,9 +34,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // 로그인 확인용 쿠키
   const cookiesStore = cookies();
   const userId = cookiesStore.get("_id")?.value;
-  console.log(userId);
+  const token = cookiesStore.get("accessToken")?.value;
 
   return (
     <html lang="en">
@@ -44,7 +45,7 @@ export default async function RootLayout({
         className={`${pretendard.variable} antialiased max-w-[390px] mx-auto`}
       >
         <Providers>
-          {cookiesStore && <UserDataLoader userId={userId} />}
+          {token && <UserDataLoader userId={userId} />}
           <DynamicHeader />
           <Suspense fallback={<Spinner />}>
             <main className="pb-[100px] pt-[70px]">{children}</main>

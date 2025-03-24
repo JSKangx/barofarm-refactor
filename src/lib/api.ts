@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 // RequestInit : fetch API의 기본 옵션 타입
 export type FetchApiOptions = RequestInit & {
