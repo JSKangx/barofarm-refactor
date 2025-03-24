@@ -4,6 +4,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { signOut } from "server-action";
 import { useUserStore } from "store/userStore";
 
 export default function MyPageClient() {
@@ -16,14 +18,18 @@ export default function MyPageClient() {
   const user = useUserStore((store) => store.user);
   const resetUser = useUserStore((store) => store.resetUser); // 스토어 초기화
 
-  // 로그아웃 클릭시 실행될 함수
-  const onHandleLogout = () => {
+  // 로그아웃 버튼 클릭시 실행될 함수
+  const onHandleLogout = async () => {
     resetUser(); // 스토어 비우기
-    queryClient.clear(); //로그아웃 시 캐시 삭제
-    router.push("/users/login"); // 로그인 페이지로 리다이렉트
+    const result = await signOut(); // 쿠키 데이터 삭제
+    queryClient.clear(); // 로그아웃 시 캐시 삭제
+    if (result.success) {
+      toast.success("로그아웃 되었습니다.");
+      router.push("/users/login"); // 로그인 페이지로 리다이렉트
+    }
   };
 
-  // 로그인 시 실행될 함수
+  // 로그인 버튼 클릭시 실행될 함수
   const onHandleLogin = () => {
     router.push("/users/login"); // 로그인 페이지로 이동
   };

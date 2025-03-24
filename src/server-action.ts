@@ -2,8 +2,8 @@
 
 import { fetchApi } from "lib/api";
 import { ProductsResponse } from "type/product";
-import { signIn as _signIn, signOut as _signOut } from "auth";
 import { revalidateTag } from "next/cache";
+import { cookies } from "next/headers";
 
 // 카테고리별 상품 목록 가져오기
 export async function getProducts(category: string) {
@@ -28,11 +28,11 @@ export async function revalidateProductsCache(category?: string) {
   }
 }
 
-// NextAuth의 로직을 클라이언트에서 사용하도록 함수 래핑
-export async function signIn() {
-  await _signIn;
-}
+// 로그아웃시 쿠키를 clear 하기 위한 서버 액션
+export async function signOut() {
+  cookies().delete("_id");
+  cookies().delete("accessToken");
+  cookies().delete("refreshToken");
 
-export async function singOut() {
-  await _signOut;
+  return { success: true };
 }
