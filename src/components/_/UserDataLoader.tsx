@@ -26,6 +26,7 @@ export default function UserDataLoader({ userId }: Props) {
           image: userData.image,
           address: userData.address,
           phone: userData.phone,
+          posts: userData.posts,
         });
       } catch (error) {
         console.error("사용자 정보 로드 실패", error);

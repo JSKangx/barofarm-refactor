@@ -69,4 +69,5 @@ export interface LoginUserType {
   image?: string;
   address?: string;
   phone?: string;
+  posts?: number;
 }

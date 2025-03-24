@@ -62,6 +62,16 @@ export default function DynamicHeader() {
           </>
         ),
       };
+    } else if (pathname === "users/mypage") {
+      headerConfig = {
+        ...headerConfig,
+        title: "마이페이지",
+        rightChild: (
+          <>
+            <HeaderIcon name="search" onClick={() => router.push("/search")} />
+          </>
+        ),
+      };
     }
 
     return headerConfig;
