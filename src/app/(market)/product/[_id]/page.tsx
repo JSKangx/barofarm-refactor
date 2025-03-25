@@ -9,9 +9,22 @@ export type DetailProps = {
 };
 
 // 메타 데이터 설정
-// export function generateMetadata({params}: DetailProps) {
+export async function generateMetadata({ params }: DetailProps) {
+  // data fetching
+  const product: ProductDetailResponse = await fetchApi(
+    `/products/${params._id}`,
+    {
+      next: {
+        revalidate: 300,
+        tags: ["products", params._id],
+      },
+    }
+  );
 
-// }
+  return {
+    title: product.item.name,
+  };
+}
 
 export default async function ProductDetail({ params }: DetailProps) {
   // data fetching
@@ -20,6 +33,7 @@ export default async function ProductDetail({ params }: DetailProps) {
     {
       next: {
         revalidate: 300,
+        tags: ["products", params._id],
       },
     }
   );

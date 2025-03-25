@@ -21,7 +21,7 @@ export function generateMetadata({ params }: Props) {
     categoryTitle.find((item) => item.key === params.category)?.label ||
     "카테고리";
   return {
-    title: `${categoryLabel} | 바로Farm`,
+    title: `${categoryLabel}`,
     description: `바로Farm ${categoryLabel} 카테고리 페이지입니다.`,
   };
 }

@@ -25,7 +25,10 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icons/BaroFarmIcon.png",
   },
-  title: "바로Farm",
+  title: {
+    template: "%s | 바로Farm",
+    default: "바로 Farm",
+  },
   description: "소규모 생산자와 구매자 간의 농수산물 직거래 플랫폼",
 };
 

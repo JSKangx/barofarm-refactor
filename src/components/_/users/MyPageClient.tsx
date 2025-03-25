@@ -16,11 +16,9 @@ export default function MyPageClient() {
   // zustand store에서 유저 상태 가져옴
   // 유저가 로그인 상태인지 확인하는 용도
   const user = useUserStore((store) => store.user);
-  const resetUser = useUserStore((store) => store.resetUser); // 스토어 초기화
 
   // 로그아웃 버튼 클릭시 실행될 함수
   const onHandleLogout = async () => {
-    resetUser(); // 스토어 비우기
     const result = await signOut(); // 쿠키 데이터 삭제
     queryClient.clear(); // 로그아웃 시 캐시 삭제
     if (result.success) {
