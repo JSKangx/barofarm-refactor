@@ -9,9 +9,28 @@ export const metadata: Metadata = {
     "바로파밍은 모든 회원이 함께하는 소통 공간입니다. 바로팜에서 구매한 상품으로 만든 요리를 자랑하고 나만의 레시피를 나누어 보세요!",
 };
 
-export default async function Board() {
+export interface SearchParams {
+  [key: string]: string;
+}
+
+interface BoardPros {
+  searchParams: SearchParams;
+}
+
+export default async function Board({ searchParams }: BoardPros) {
   // 게시물 데이터 fetching
-  const res: PostResponse = await fetchApi("/posts?type=community");
+  const searchKeyword = searchParams.keyword;
+  const url = searchKeyword
+    ? `/posts?type=community&keyword=${searchKeyword}`
+    : "/posts?type=community";
+  const res: PostResponse = await fetchApi(url, {
+    next: {
+      tags: searchKeyword
+        ? ["posts", "community", searchKeyword]
+        : ["posts", "community"],
+      revalidate: 60,
+    },
+  });
   const posts = res.item;
 
   return <BoardClient posts={posts} />;

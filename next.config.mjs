@@ -7,6 +7,11 @@ const nextConfig = {
         hostname: "11.fesp.shop",
         pathname: "/**",
       },
+      {
+        protocol: "http",
+        hostname: "k.kakaocdn.net",
+        pathname: "/**",
+      },
     ],
   },
 };
