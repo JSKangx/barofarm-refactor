@@ -48,7 +48,9 @@ export default function DynamicHeader() {
           </>
         ),
       };
-    } else if (pathname.startsWith("/product")) {
+    }
+    // 상품 상세 페이지
+    else if (pathname.startsWith("/product")) {
       headerConfig = {
         ...headerConfig,
         title: categoryTitle,
@@ -62,13 +64,31 @@ export default function DynamicHeader() {
           </>
         ),
       };
-    } else if (pathname === "users/mypage") {
+    }
+    // 마이 페이지
+    else if (pathname === "/users/mypage") {
       headerConfig = {
         ...headerConfig,
         title: "마이페이지",
         rightChild: (
           <>
             <HeaderIcon name="search" onClick={() => router.push("/search")} />
+          </>
+        ),
+      };
+    }
+    // 게시판
+    else if (pathname === "/board") {
+      headerConfig = {
+        ...headerConfig,
+        title: "바로파밍",
+        rightChild: (
+          <>
+            <HeaderIcon name="search" onClick={() => router.push("/search")} />
+            <HeaderIcon
+              name="cart_empty"
+              onClick={() => router.push("/cart")}
+            />
           </>
         ),
       };
