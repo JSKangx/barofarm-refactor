@@ -1,18 +1,12 @@
 import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProductDetailType, ProductType } from "type/product";
-import { useUserStore } from "store/userStore";
-import { usePathname } from "next/navigation";
-import useAuth from "hook/useAuth";
 import { clientFetchApi } from "lib/client-api";
 import { revalidateProductsCache } from "server-action";
 
 export const useLikeToggle = (product: ProductType | ProductDetailType) => {
   const [isLiked, setIsLiked] = useState(!!product?.myBookmarkId);
   const queryClient = useQueryClient();
-  const { user } = useUserStore(); // 유저 정보 가져오기
-  const requireAuth = useAuth();
-  const pathname = usePathname();
 
   useEffect(() => {
     setIsLiked(!!product?.myBookmarkId);
