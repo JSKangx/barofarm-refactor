@@ -3,7 +3,7 @@
 import PostItem from "components/_/board/PostItem";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import { useUserStore } from "store/userStore";
 import { PostType } from "type/board";
 
@@ -16,6 +16,8 @@ export default function BoardClient({ posts }: BoardClientProps) {
   const router = useRouter();
   // Next.js에서는 읽기 전용이라 직접 상태 변경 불가
   const searchParams = useSearchParams();
+  // 검색어 상태관리
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
 
   // 새로운 searchParams 객체를 생성하고 URL을 업데이트하는 함수
   const updateSearchParams = (e: FormEvent<HTMLFormElement>) => {
@@ -29,6 +31,7 @@ export default function BoardClient({ posts }: BoardClientProps) {
     // 검색어가 있으면 params 객체 업데이트
     if (value) {
       params.set("keyword", value);
+      setSearchKeyword(value);
     } else {
       params.delete("keyword");
     }
@@ -45,7 +48,12 @@ export default function BoardClient({ posts }: BoardClientProps) {
         </label>
         <div className="flex items-center gap-1 w-full rounded-md p-1 border border-gray3 focus-within:border-btn-primary">
           <button type="submit" aria-label="검색하기">
-            <img src="/icons/icon_search.svg" alt="" />
+            <Image
+              width={24}
+              height={24}
+              src="/icons/icon_search.svg"
+              alt="검색 버튼"
+            />
           </button>
           <input
             className="flex-grow border-none outline-none
@@ -83,9 +91,23 @@ export default function BoardClient({ posts }: BoardClientProps) {
           나누어 보세요!
         </p>
       </div>
+      {posts.length !== 0 && searchKeyword !== "" && (
+        <>
+          <span className="block py-3 text-sm font-semibold">
+            "{searchKeyword}" 검색 결과 {posts.length}개
+          </span>
+        </>
+      )}
       {posts?.map((post) => (
         <PostItem key={post._id} post={post} />
       ))}
+      {posts.length === 0 && searchKeyword !== "" && (
+        <div className="relative">
+          <span className="mt-10 block text-center text-gray4">
+            "{searchKeyword}" 검색 결과가 없습니다.
+          </span>
+        </div>
+      )}
     </div>
   );
 }
