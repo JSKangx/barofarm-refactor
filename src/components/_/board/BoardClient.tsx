@@ -20,9 +20,11 @@ export default function BoardClient({ posts }: BoardClientProps) {
   // 새로운 searchParams 객체를 생성하고 URL을 업데이트하는 함수
   const updateSearchParams = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const value = e.target.keyword.value.trim();
+
+    // formData 사용하여 keyword input에 접근
+    const formData = new FormData(e.currentTarget);
+    const value = (formData.get("keyword") as string)?.trim();
     const params = new URLSearchParams(searchParams.toString());
-    // 검색어
     // 검색어가 있으면 params 객체 업데이트
     if (value) {
       params.set("keyword", value);

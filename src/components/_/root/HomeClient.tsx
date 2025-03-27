@@ -49,20 +49,23 @@ export default function HomeClient({
     <div className={`grid grid-cols-3 px-5 gap-1`}>
       {/* 최대 9개까지만 필터링 */}
       {posts
-        ?.filter((_, index) => index < 9)
+        ?.filter((item) => item.image)
+        .filter((_, index) => index < 9)
         .map((item) => (
           <Link
             href={`/board/${item._id}`}
             key={item._id}
             className="aspect-square w-full relative"
           >
-            <Image
-              fill
-              sizes="(max-width: 640px) 33vw, (max-width: 768px) 30vw, 25vw"
-              src={`https://11.fesp.shop${item.image}`}
-              alt={item.content}
-              className="object-cover"
-            />
+            {item.image && (
+              <Image
+                fill
+                sizes="(max-width: 640px) 33vw, (max-width: 768px) 30vw, 25vw"
+                src={`https://11.fesp.shop${item.image}`}
+                alt={item.content}
+                className="object-cover"
+              />
+            )}
           </Link>
         ))}
     </div>

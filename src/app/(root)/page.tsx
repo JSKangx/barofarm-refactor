@@ -19,6 +19,8 @@ export default async function Home() {
     },
   });
 
+  console.log(posts);
+
   // 캐러셀을 위한 할인 상품 sorting
   const saleProducts = products.item
     .toSorted((a, b) => b.extra.sale - a.extra.sale)
