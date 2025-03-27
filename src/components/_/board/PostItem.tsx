@@ -1,8 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { PostType } from "type/board";
-import createdTime from "utils/getCreatedTime";
+import calculateRelativeTime from "utils/calculateRelativeTime";
 
 interface Props {
   post: PostType;
@@ -21,7 +23,7 @@ export default function PostItem({ post }: Props) {
     checkOverflow();
   }, []);
 
-  const newDate = createdTime(post.createdAt);
+  const newDate = calculateRelativeTime(post.createdAt);
 
   return (
     <div className="relative">

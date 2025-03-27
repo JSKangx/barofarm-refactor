@@ -1,4 +1,4 @@
-export default function createdTime(createdDate: string) {
+export default function calculateRelativeTime(createdDate: string) {
   const formatRelativeTime = (inputDate: string) => {
     // 타입스크립트에서는 뺄셈을 하려면 명시적으로 타임스탬프로 변환해야함
     const now = new Date().getTime();
@@ -11,8 +11,13 @@ export default function createdTime(createdDate: string) {
     if (minDiff < 1440) return `${Math.floor(minDiff / 60)}시간 전`;
     if (minDiff < 2880) return `${Math.floor(minDiff / 1440)}일 전`;
 
-    // 이틀 이상인 경우에는 날짜를 표시
-    return pastDate.toLocaleString();
+    // 이틀 이상인 경우에는 날짜를 표시 - 명시적 형식 사용(하이드레이션 에러 방지)
+    const date = new Date(pastDate);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+
+    return `${year}년, ${month}월 ${day}일`;
   };
   return formatRelativeTime(createdDate);
 }
