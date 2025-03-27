@@ -2,6 +2,7 @@
 
 import PostItem from "components/_/board/PostItem";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { useUserStore } from "store/userStore";
@@ -91,23 +92,34 @@ export default function BoardClient({ posts }: BoardClientProps) {
           나누어 보세요!
         </p>
       </div>
-      {posts.length !== 0 && searchKeyword !== "" && (
+      {posts.length !== 0 && searchParams.size > 0 && (
         <>
           <span className="block py-3 text-sm font-semibold">
-            "{searchKeyword}" 검색 결과 {posts.length}개
+            &quot;{searchKeyword}&quot; 검색 결과 {posts.length}개
           </span>
         </>
       )}
       {posts?.map((post) => (
         <PostItem key={post._id} post={post} />
       ))}
-      {posts.length === 0 && searchKeyword !== "" && (
+      {posts.length === 0 && searchParams.size > 0 && (
         <div className="relative">
           <span className="mt-10 block text-center text-gray4">
-            "{searchKeyword}" 검색 결과가 없습니다.
+            &quot;{searchKeyword}&quot; 검색 결과가 없습니다.
           </span>
         </div>
       )}
+      <Link
+        href={user ? "new" : "/users/login"}
+        className="fixed right-[calc(50%-155px)] bottom-[150px] w-[40px] h-[40px] rounded-full shadow-bottom"
+      >
+        <Image
+          width={40}
+          height={40}
+          src="/icons/icon_newpost.svg"
+          alt="글쓰기 버튼"
+        />
+      </Link>
     </div>
   );
 }
