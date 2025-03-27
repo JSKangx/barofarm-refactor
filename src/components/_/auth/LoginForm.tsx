@@ -10,7 +10,6 @@ import { ErrorResponse, UserResponseType } from "type/user";
 
 interface LoginFormProps {
   redirectPath?: string;
-  error?: string;
 }
 
 interface FormData {
@@ -18,10 +17,7 @@ interface FormData {
   password: string;
 }
 
-export default function LoginForm({
-  redirectPath,
-  error: initialError,
-}: LoginFormProps) {
+export default function LoginForm({ redirectPath }: LoginFormProps) {
   const router = useRouter(); // 라우트
   const { setUser } = useUserStore();
   // 로그인 정보 저장

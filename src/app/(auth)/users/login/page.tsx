@@ -33,10 +33,7 @@ export default function LoginPage({
         </div>
 
         <Suspense fallback={<Spinner />}>
-          <LoginForm
-            redirectPath={searchParams.redirect}
-            error={searchParams.error}
-          />
+          <LoginForm redirectPath={searchParams.redirect} />
         </Suspense>
 
         <div className="mb-5 w-full h-[3.25rem] m-auto">
