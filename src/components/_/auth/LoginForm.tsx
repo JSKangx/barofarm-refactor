@@ -42,6 +42,7 @@ export default function LoginForm({ redirectPath }: LoginFormProps) {
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
+          rememberMe,
         }),
       });
 
