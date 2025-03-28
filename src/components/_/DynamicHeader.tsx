@@ -93,6 +93,13 @@ export default function DynamicHeader() {
         ),
       };
     }
+    // 검색 페이지
+    else if (pathname === "/search") {
+      headerConfig = {
+        ...headerConfig,
+        title: "검색",
+      };
+    }
 
     return headerConfig;
   };
