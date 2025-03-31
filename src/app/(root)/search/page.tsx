@@ -1,18 +1,22 @@
 "use client";
 
 import RecentKeywordItem from "components/_/search/RecentKeywordItem";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function SearchPage() {
   const router = useRouter();
   // 최근 검색어 상태 관리
-  // useState에 함수를 전달할 경우, 컴포넌트의 첫 번째 렌더링에서만 호출한 후 리렌더링에서는 이 함수의 반환값을 무시하고, 이미 저장된 state값을 사용함
-  const [recentKeywords, setRecentKeywords] = useState<string[]>(() => {
-    // localStorage에서 최근 검색어 배열을 가져오거나, 없으면 빈 배열 반환
-    return JSON.parse(localStorage.getItem("recentKeywords") || "[]");
-  });
+  const [recentKeywords, setRecentKeywords] = useState<string[]>([]);
+  // Next.js에서는 컴포넌트가 마운트 된 후에 localStorage에 접근해야 함
+  useEffect(() => {
+    const storedKeywords = JSON.parse(
+      localStorage.getItem("recentKeywords") || "[]"
+    );
+    setRecentKeywords(storedKeywords);
+  }, []);
 
   // 검색어 저장하는 함수
   const saveKeyword = (newKeyword: string) => {
@@ -87,7 +91,12 @@ export default function SearchPage() {
           </label>
           <div className="flex items-center gap-1 w-full rounded-md p-1 border border-gray3 focus-within:border-btn-primary">
             <button type="submit" aria-label="검색하기">
-              <img src="/icons/icon_search.svg" alt="" />
+              <Image
+                width={24}
+                height={24}
+                src="/icons/icon_search.svg"
+                alt="검색 버튼"
+              />
             </button>
             <input
               className="flex-grow border-none outline-none
