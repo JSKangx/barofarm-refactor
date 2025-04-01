@@ -29,7 +29,7 @@ export default function ResultClient({ searchKeyword, sortType, data }: Props) {
     params.set("sort", sortType);
 
     // URL navigation
-    router.push(`/search/results?keyword=${searchKeyword}&sort=${sortType}`);
+    router.push(`/search/results?${params.toString()}`);
   };
 
   return (
