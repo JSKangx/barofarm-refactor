@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 interface Props {
@@ -15,7 +16,12 @@ export default function RecentKeywordItem({ keyword, onRemove }: Props) {
         {keyword}
       </Link>
       <button aria-label="검색어 삭제" onClick={() => onRemove(keyword)}>
-        <img src="/icons/icon_x_green.svg" alt="삭제" />
+        <Image
+          width={18}
+          height={18}
+          src="/icons/icon_x_green.svg"
+          alt="삭제"
+        />
       </button>
     </li>
   );
