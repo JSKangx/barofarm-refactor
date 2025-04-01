@@ -22,7 +22,6 @@ export default function DynamicHeader() {
   const { _id } = useParams(); // 동적 세그먼트 추출
   const searchParams = useSearchParams(); // 검색어 추출을 위한 params
   const keyword = searchParams.get("keyword");
-  console.log(keyword);
   const categoryTitle = useCategory(_id);
 
   // 경로별로 헤더 구성 설정
