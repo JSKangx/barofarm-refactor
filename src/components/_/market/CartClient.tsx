@@ -1,46 +1,39 @@
+"use client";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
+import { clientFetchApi } from "lib/client-api";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useUserStore } from "store/userStore";
+import { BookmarkItem, CartItems, CartResponse } from "type/cart";
 
-export default function CartPage() {
+interface Props {
+  data?: CartItems[];
+  bookmarkItem?: BookmarkItem[];
+}
+
+export default function CartClient({ data, bookmarkItem }: Props) {
   const { user } = useUserStore();
   // 구매할 물품 선택을 위한 폼
   const { register, handleSubmit } = useForm();
   // 결제 버튼 보이기 상태
-  const [showButton, setShowButton] = useState(false);
+  const [showButton, setShowButton] = useState<boolean>(false);
   // 최종 상품 금액을 따로 상태로 관리
-  const [totalFees, setTotalFees] = useState(0);
-  const [discount, setDiscount] = useState(0);
-  const [totalPayFees, setTotalPayFees] = useState(0);
+  const [totalFees, setTotalFees] = useState<number>(0);
+  const [discount, setDiscount] = useState<number>(0);
+  const [totalPayFees, setTotalPayFees] = useState<number>(0);
   // 체크된 상품의 아이디를 담은 배열 상태 관리
-  const [checkedItemsIds, setCheckedItemsIds] = useState([]);
+  const [checkedItemsIds, setCheckedItemsIds] = useState<number[]>([]);
   // 보여줄 상품의 타입을 상태 관리
-  const [renderCart, setRenderCart] = useState(true);
+  const [renderCart, setRenderCart] = useState<boolean>(true);
 
   // targetRef가 보이면 결제버튼을 보이게 함
   const targetRef = useRef(null);
 
   const router = useRouter();
-
-  // 헤더 상태 설정
-  useEffect(() => {
-    setHeaderContents({
-      leftChild: <HeaderIcon name="back" onClick={() => navigate(-1)} />,
-      title: "장바구니",
-    });
-  }, []);
-
-  // 장바구니 목록 조회
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["carts"],
-    queryFn: () => axios.get("/carts"),
-    select: (res) => res.data,
-    staleTime: 1000 * 10,
-  });
 
   // 스크롤에 따라 결제버튼 보이게 하기
   useEffect(() => {
@@ -81,9 +74,14 @@ export default function CartPage() {
   // 장바구니 상품 삭제
   const queryClient = useQueryClient();
   const deleteItem = useMutation({
-    mutationFn: (_id) => {
+    mutationFn: async (_id: number) => {
       const ok = confirm("상품을 삭제하시겠습니까?");
-      if (ok) axios.delete(`/carts/${_id}`);
+      if (ok) {
+        const res: CartResponse = await clientFetchApi(`/carts/${_id}`, {
+          method: "DElETE",
+        });
+        return res;
+      }
     },
     onSuccess: () => {
       toast.success("상품이 삭제되었습니다.");
@@ -95,12 +93,23 @@ export default function CartPage() {
 
   // 장바구니 수량 변경
   const updateItem = useMutation({
-    mutationFn: ({ _id, quantity }) =>
+    mutationFn: async ({
+      _id,
+      quantity,
+    }: {
+      _id: number;
+      quantity: number;
+    }) => {
       // _id는 장바구니 _id다 (상품의 _id는 product_id)
-      axios.patch(`/carts/${_id}`, {
-        // 보낼 데이터
-        quantity: quantity,
-      }),
+      const res: CartResponse = await clientFetchApi(`/carts/${_id}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          quantity: quantity,
+        }),
+      });
+
+      return res;
+    },
     onSuccess: () => {
       // 캐시된 데이터 삭제 후 리렌더링
       queryClient.invalidateQueries({ queryKey: ["carts"] });
@@ -108,21 +117,14 @@ export default function CartPage() {
     onError: (err) => console.error(err),
   });
 
-  // 찜한 상품 data fetching
-  const { data: likeItem } = useQuery({
-    queryKey: ["bookmarks", "product"],
-    queryFn: () => axios.get(`/bookmarks/product`),
-    select: (res) => res.data.item,
-  });
-
   // 전체 선택 핸들러
   // 전체 선택 체크박스의 체크 상태를 인수로 받는다.
-  const toggleCheckAll = (isChecked) => {
+  const toggleCheckAll = (isChecked: boolean) => {
     // 전체 선택 체크박스가 체크되었을 때
     if (isChecked) {
       // 장바구니에 담긴 모든 아이템의 아이디를 checkedItemsIds 배열에 담음
-      const allProductsIds = data.item.map((item) => item._id);
-      setCheckedItemsIds(allProductsIds);
+      const allProductsIds = data?.map((item) => item._id);
+      if (allProductsIds) setCheckedItemsIds(allProductsIds);
     } else {
       // 체크 해제되었으면 checkedItemsIds 배열을 빈 배열로 설정
       setCheckedItemsIds([]);
@@ -130,33 +132,38 @@ export default function CartPage() {
   };
 
   // 장바구니 개별 아이템 체크 핸들러
-  const toggleCartItemCheck = (targetId) => {
+  const toggleCartItemCheck = (targetId: number) => {
     // 체크한 상품을 장바구니 데이터에서 찾음
-    const cartItem = data.item.find((item) => item._id === targetId);
+    const cartItem = data?.find((item) => item._id === targetId);
 
     // 체크한 상품의 product_id를 checkedCartItems 상태에 추가/제거
-    setCheckedItemsIds((prevCheckedIds) => {
-      const isAlreadyChecked = prevCheckedIds.includes(cartItem._id);
+    if (cartItem)
+      setCheckedItemsIds((prevCheckedIds) => {
+        const isAlreadyChecked = prevCheckedIds.includes(cartItem._id);
 
-      if (isAlreadyChecked) {
-        return prevCheckedIds.filter((id) => id !== cartItem._id);
-      }
-      return [...prevCheckedIds, cartItem._id];
-    });
+        if (isAlreadyChecked) {
+          return prevCheckedIds.filter((id) => id !== cartItem._id);
+        }
+        return [...prevCheckedIds, cartItem._id];
+      });
   };
 
   // 장바구니 아이템 여러건 삭제
   const deleteItems = useMutation({
-    mutationFn: () => {
+    mutationFn: async () => {
       if (checkedItemsIds.length !== 0) {
-        const ok = confirm("선택하신 상품을 삭제할까요?");
+        const ok = confirm("선택한 상품을 삭제할까요?");
         if (ok) {
           setCheckedItemsIds([]);
-          return axios.delete("/carts", {
-            data: {
-              carts: checkedItemsIds,
-            },
+          const res: CartResponse = await clientFetchApi("/carts", {
+            method: "DELETE",
+            body: JSON.stringify({
+              data: {
+                carts: checkedItemsIds,
+              },
+            }),
           });
+          return res;
         }
       } else {
         toast.warning("삭제할 상품을 선택하세요.");
@@ -180,11 +187,13 @@ export default function CartPage() {
     const { subtotal, totalDiscount } = checkedItemsIds.reduce(
       (acc, checkedId) => {
         // 장바구니에서 아이템 찾기
-        const currentCartItem = data.item.find(
+        const currentCartItem = data?.item.find(
           (item) => item._id === checkedId
         );
 
         // 해당 아이템의 총 합산 금액 구하기
+        if (!currentCartItem) return null;
+
         const itemTotal =
           currentCartItem?.quantity * currentCartItem?.product.price;
 
@@ -212,16 +221,14 @@ export default function CartPage() {
     setTotalPayFees(totalFees - discount);
   }, [totalFees, discount]);
 
-  if (isLoading) return <Spinner />;
-  if (isError) return <DataErrorPage />;
   // 데이터 없을시 null 반환하여 에러 방지
-  if (!data && !likeItem) return null;
+  if (!data && !bookmarkItem) return null;
 
   // 최종 배송비 계산
   const totalShippingFees = totalFees > 30000 || totalFees === 0 ? 0 : 2500;
 
   // 장바구니 아이템으로 화면 렌더링
-  const itemList = data.item.map((item) => (
+  const itemList = data?.map((item) => (
     <CartItem
       key={item._id}
       {...item}
@@ -234,7 +241,7 @@ export default function CartPage() {
   ));
 
   // 찜한 상품으로 화면 렌더링
-  const likeItems = likeItem?.map((item) => (
+  const bookmarkItems = bookmarkItem?.map((item) => (
     <ProductSmall key={item._id} product={item.product} bookmarkId={item._id} />
   ));
 
@@ -267,9 +274,6 @@ export default function CartPage() {
 
   return (
     <>
-      <Helmet>
-        <title>장바구니 | 바로Farm</title>
-      </Helmet>
       <div>
         <section className="flex h-9 font-semibold border-b border-gray2 *:flex *:grow *:cursor-pointer *:self-stretch *:items-center *:justify-center">
           <div
@@ -286,7 +290,7 @@ export default function CartPage() {
             }`}
             onClick={() => setRenderCart(false)}
           >
-            찜한 상품({likeItem?.length})
+            찜한 상품({bookmarkItem?.length})
           </div>
         </section>
         <>
@@ -378,9 +382,9 @@ export default function CartPage() {
           ) : (
             // 찜한 상품렌더링
             <div>
-              {likeItem.length > 0 ? (
+              {bookmarkItem.length > 0 ? (
                 <div className="grid grid-cols-3 gap-x-2 gap-y-4 py-2 px-5">
-                  {likeItems}
+                  {bookmarkItems}
                 </div>
               ) : (
                 <section className="pt-[100px] flex flex-col gap-[10px] items-center text-[14px]">
