@@ -2,12 +2,12 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { ProductType } from "type/product";
 import { useRouter } from "next/navigation";
 import { clientFetchApi } from "lib/client-api";
-import { CartResponse } from "type/cart";
+import { BookmarkItem, CartResponse } from "type/cart";
 import Image from "next/image";
 import Button from "components/_/common/Button";
+import { BookmarkDelete } from "type/bookmarks";
 
 const likeIcon = {
   default: "/icons/icon_likeHeart_no.svg",
@@ -15,25 +15,29 @@ const likeIcon = {
 };
 
 interface Props {
-  product: ProductType;
+  product: BookmarkItem;
   bookmarkId: number;
 }
 
 export default function ProductSmall({ product, bookmarkId }: Props) {
   const router = useRouter();
+  const bookmarkProduct = product.product;
 
   // 상품을 누르면 상품 상세 페이지로 이동
   const goDetailPage = () => {
-    router.push(`/product/${product._id}`);
+    router.push(`/product/${bookmarkProduct._id}`);
   };
 
   const queryClient = useQueryClient();
   // 북마크 해제 기능
   const deleteBookmark = useMutation({
     mutationFn: async () => {
-      const res = await clientFetchApi(`/bookmarks/${bookmarkId}`, {
-        method: "DELETE",
-      });
+      const res: BookmarkDelete = await clientFetchApi(
+        `/bookmarks/${bookmarkId}`,
+        {
+          method: "DELETE",
+        }
+      );
       return res;
     },
     onSuccess: () => {
@@ -48,7 +52,7 @@ export default function ProductSmall({ product, bookmarkId }: Props) {
       const res: CartResponse = await clientFetchApi("/carts", {
         method: "POST",
         body: JSON.stringify({
-          product_id: product._id,
+          product_id: bookmarkProduct._id,
           quantity: 1,
         }),
       });
@@ -70,8 +74,8 @@ export default function ProductSmall({ product, bookmarkId }: Props) {
           width={110}
           height={110}
           className="aspect-square rounded-lg object-cover w-full"
-          alt={product.name}
-          src={`https://11.fesp.shop${product.mainImages[0]?.path}`}
+          alt={bookmarkProduct.name}
+          src={`https://11.fesp.shop${bookmarkProduct.mainImages[0]?.path}`}
           onClick={goDetailPage}
         />
         <button
@@ -94,13 +98,13 @@ export default function ProductSmall({ product, bookmarkId }: Props) {
         </button>
       </div>
       <div className="pl-[5px] pt-[10px]" onClick={goDetailPage}>
-        <p className="text-xs line-clamp-1">{product.name}</p>
+        <p className="text-xs line-clamp-1">{bookmarkProduct.name}</p>
         <div className="pt-1 flex items-center">
           <span className="text-red1 font-semibold text-base pr-1">
-            {product.extra.sale}%
+            {bookmarkProduct.extra.sale}%
           </span>
           <span className="font-extrabold text-lg line-clamp-1">
-            {product.extra.saledPrice.toLocaleString()}원
+            {bookmarkProduct.extra.saledPrice.toLocaleString()}원
           </span>
         </div>
       </div>

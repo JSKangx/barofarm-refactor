@@ -2,8 +2,12 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
+import Button from "components/_/common/Button";
+import Checkbox from "components/_/common/Checkbox";
 import CartItem from "components/_/market/CartItem";
+import ProductSmall from "components/_/market/ProductSmall";
 import { clientFetchApi } from "lib/client-api";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -215,7 +219,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
 
     setTotalFees(subtotal);
     setDiscount(totalDiscount);
-  }, [checkedItemsIds, data?.item]);
+  }, [checkedItemsIds, data]);
 
   // 총 결제금액 업데이트
   useEffect(() => {
@@ -243,24 +247,24 @@ export default function CartClient({ data, bookmarkItem }: Props) {
 
   // 찜한 상품으로 화면 렌더링
   const bookmarkItems = bookmarkItem?.map((item) => (
-    <ProductSmall key={item._id} product={item.product} bookmarkId={item._id} />
+    <ProductSmall key={item._id} product={item} bookmarkId={item._id} />
   ));
 
   // 체크한 아이템의 데이터가 담긴 배열을 구매 페이지로 전송
   const selectItem = () => {
     if (checkedItemsIds.length === 0) {
-      toast.alert("구매할 물품을 선택하세요");
+      toast.error("구매할 물품을 선택하세요");
       return;
     }
 
     // 결제 페이지로 체크한 상품의 데이터 넘기기
     const selectedItems = checkedItemsIds.map((_id) =>
       // 각각의 id 마다 checkedItemsIds에 담긴 id와 같은 상품을 장바구니에서 찾아서 리턴
-      data.item.find((item) => item._id === _id)
+      data?.find((item) => item._id === _id)
     );
     const currentUrl = window.location.href;
 
-    navigate("/payment", {
+    router.push("/payment", {
       // seletedItems : 체크한 아이템의 아이디가 딤긴 배열
       // totalFees : 최종 상품 금액
       // totalShippingFees : 최종 배송비
@@ -308,7 +312,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
                       <Checkbox
                         id="checkAll"
                         name="checkAll"
-                        checked={checkedItemsIds.length === data.item.length}
+                        checked={checkedItemsIds.length === data?.length}
                         onChange={(e) => toggleCheckAll(e.target.checked)}
                       />
                       전체 선택 ({checkedItemsIds.length}/{itemList?.length})
@@ -373,7 +377,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
                 <>
                   <section className="pt-[100px] flex flex-col gap-[10px] items-center text-[14px]">
                     <span className="text-gray4">담은 상품이 없습니다.</span>
-                    <Link to="/" className="text-bg-primary underline">
+                    <Link href="/" className="text-bg-primary underline">
                       쇼핑하러 가기
                     </Link>
                   </section>
@@ -390,7 +394,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
               ) : (
                 <section className="pt-[100px] flex flex-col gap-[10px] items-center text-[14px]">
                   <span className="text-gray4">찜한 상품이 없습니다.</span>
-                  <Link to="/" className="text-bg-primary underline">
+                  <Link href="/" className="text-bg-primary underline">
                     쇼핑하러 가기
                   </Link>
                 </section>

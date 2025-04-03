@@ -3,7 +3,7 @@ interface CheckboxProps {
   name?: string;
   onClick?: () => void;
   register?: object;
-  onChange?: () => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   checked?: boolean;
 }
 

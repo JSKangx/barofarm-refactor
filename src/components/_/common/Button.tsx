@@ -5,10 +5,10 @@ import clsx from "clsx";
 export interface ButtonProps {
   children: React.ReactNode;
   type?: "button" | "submit" | "reset" | undefined;
-  onClick: () => void;
+  onClick?: () => void;
   color?: string;
   isBig?: boolean;
-  isWhite: boolean;
+  isWhite?: boolean;
 }
 
 export default function Button({
