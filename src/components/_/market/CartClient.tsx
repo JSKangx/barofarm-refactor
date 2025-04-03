@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { useUserStore } from "store/userStore";
+import { useCartStore } from "store/cartStore";
 import { BookmarkItem, CartItems, CartResponse } from "type/cart";
 
 interface Props {
@@ -21,7 +21,6 @@ interface Props {
 }
 
 export default function CartClient({ data, bookmarkItem }: Props) {
-  const { user } = useUserStore();
   // 구매할 물품 선택을 위한 폼
   const { register, handleSubmit } = useForm();
   // 결제 버튼 보이기 상태
@@ -34,6 +33,8 @@ export default function CartClient({ data, bookmarkItem }: Props) {
   const [checkedItemsIds, setCheckedItemsIds] = useState<number[]>([]);
   // 보여줄 상품의 타입을 상태 관리
   const [renderCart, setRenderCart] = useState<boolean>(true);
+  // CartStore 상태 가져오기
+  const { setCart } = useCartStore();
 
   // targetRef가 보이면 결제버튼을 보이게 함
   const targetRef = useRef(null);
@@ -192,12 +193,10 @@ export default function CartClient({ data, bookmarkItem }: Props) {
     const { subtotal, totalDiscount } = checkedItemsIds.reduce(
       (acc, checkedId) => {
         // 장바구니에서 아이템 찾기
-        const currentCartItem = data?.item.find(
-          (item) => item._id === checkedId
-        );
+        const currentCartItem = data?.find((item) => item._id === checkedId);
 
         // 해당 아이템의 총 합산 금액 구하기
-        if (!currentCartItem) return null;
+        if (!currentCartItem) return acc;
 
         const itemTotal =
           currentCartItem?.quantity * currentCartItem?.product.price;
@@ -258,23 +257,26 @@ export default function CartClient({ data, bookmarkItem }: Props) {
     }
 
     // 결제 페이지로 체크한 상품의 데이터 넘기기
-    const selectedItems = checkedItemsIds.map((_id) =>
-      // 각각의 id 마다 checkedItemsIds에 담긴 id와 같은 상품을 장바구니에서 찾아서 리턴
-      data?.find((item) => item._id === _id)
-    );
+    const selectedItems = checkedItemsIds
+      .map((_id) =>
+        // 각각의 id 마다 checkedItemsIds에 담긴 id와 같은 상품을 장바구니에서 찾아서 리턴
+        data?.find((item) => item._id === _id)
+      )
+      // 타입 가드
+      .filter((item) => item !== undefined);
     const currentUrl = window.location.href;
 
-    router.push("/payment", {
+    // 스토어에 선택한 아이템들의 정보를 저장
+    setCart({
       // seletedItems : 체크한 아이템의 아이디가 딤긴 배열
       // totalFees : 최종 상품 금액
       // totalShippingFees : 최종 배송비
-      state: {
-        selectedItems,
-        totalFees: totalPayFees,
-        totalShippingFees,
-        previousUrl: currentUrl,
-      },
+      items: selectedItems,
+      totalFees: totalPayFees,
+      totalShippingFees,
+      previousUrl: currentUrl,
     });
+    router.push("/payment");
   };
 
   return (
@@ -287,7 +289,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
             }`}
             onClick={() => setRenderCart(true)}
           >
-            담은 상품({itemList.length})
+            담은 상품({itemList?.length})
           </div>
           <div
             className={`${
@@ -302,7 +304,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
           {/* 장바구니 상품 혹은 찜한 상품 조건부 렌더링 */}
           {renderCart ? (
             <div>
-              {itemList.length > 0 ? (
+              {itemList && itemList.length > 0 ? (
                 <>
                   <section className="py-[14px] px-5 flex gap-[6px] items-center border-b border-gray2">
                     <label
@@ -387,7 +389,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
           ) : (
             // 찜한 상품렌더링
             <div>
-              {bookmarkItem.length > 0 ? (
+              {bookmarkItem && bookmarkItem.length > 0 ? (
                 <div className="grid grid-cols-3 gap-x-2 gap-y-4 py-2 px-5">
                   {bookmarkItems}
                 </div>
