@@ -106,10 +106,19 @@ export default function DynamicHeader() {
         ...headerConfig,
         title: "검색",
       };
-    } else if (pathname === "/search/results") {
+    }
+    // 검색 결과 페이지
+    else if (pathname === "/search/results") {
       headerConfig = {
         ...headerConfig,
         title: keyword,
+      };
+    }
+    // 장바구니 페이지
+    else if (pathname === "/cart") {
+      headerConfig = {
+        ...headerConfig,
+        title: "장바구니",
       };
     }
 
