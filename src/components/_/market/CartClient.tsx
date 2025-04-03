@@ -1,7 +1,8 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
+import CartItem from "components/_/market/CartItem";
 import { clientFetchApi } from "lib/client-api";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";

@@ -14,7 +14,11 @@ export default async function Cart() {
   const cartItem = cartRes.item;
 
   // 찜한 상품 목록 조회
-  const bookmarkRes: BookmarkRes = await fetchApi("/bookmarks/product");
+  const bookmarkRes: BookmarkRes = await fetchApi("/bookmarks/product", {
+    next: {
+      tags: ["bookmarks", "product"],
+    },
+  });
   if (!bookmarkRes.item) return null;
   const bookmarkItem = bookmarkRes.item;
 

@@ -4,10 +4,10 @@ import clsx from "clsx";
 
 export interface ButtonProps {
   children: React.ReactNode;
-  type: "button" | "submit" | "reset" | undefined;
+  type?: "button" | "submit" | "reset" | undefined;
   onClick: () => void;
   color?: string;
-  isBig: boolean;
+  isBig?: boolean;
   isWhite: boolean;
 }
 
