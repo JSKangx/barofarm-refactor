@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import Button from "components/_/common/Button";
+import CartHeader from "components/_/common/CartHeader";
 import Checkbox from "components/_/common/Checkbox";
 import CartItem from "components/_/market/CartItem";
 import ProductSmall from "components/_/market/ProductSmall";
@@ -32,7 +33,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
   // 체크된 상품의 아이디를 담은 배열 상태 관리
   const [checkedItemsIds, setCheckedItemsIds] = useState<number[]>([]);
   // 보여줄 상품의 타입을 상태 관리
-  const [renderCart, setRenderCart] = useState<boolean>(true);
+  const [isCartView, setIsCartView] = useState<boolean>(true);
   // CartStore 상태 가져오기
   const { setCart } = useCartStore();
 
@@ -75,7 +76,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
         observer.unobserve(targetElement);
       }
     };
-  }, [data, renderCart]);
+  }, [data, isCartView]);
 
   // 장바구니 상품 삭제
   const queryClient = useQueryClient();
@@ -282,27 +283,15 @@ export default function CartClient({ data, bookmarkItem }: Props) {
   return (
     <>
       <div>
-        <section className="flex h-9 font-semibold border-b border-gray2 *:flex *:grow *:cursor-pointer *:self-stretch *:items-center *:justify-center">
-          <div
-            className={`${
-              renderCart ? "border-b-2 border-btn-primary" : "text-gray3"
-            }`}
-            onClick={() => setRenderCart(true)}
-          >
-            담은 상품({itemList?.length})
-          </div>
-          <div
-            className={`${
-              renderCart ? "text-gray3 " : "border-b-2 border-btn-primary"
-            }`}
-            onClick={() => setRenderCart(false)}
-          >
-            찜한 상품({bookmarkItem?.length})
-          </div>
-        </section>
+        <CartHeader
+          isCartView={isCartView}
+          setIsCartView={setIsCartView}
+          itemList={itemList}
+          bookmarkItem={bookmarkItem}
+        />
         <>
           {/* 장바구니 상품 혹은 찜한 상품 조건부 렌더링 */}
-          {renderCart ? (
+          {isCartView ? (
             <div>
               {itemList && itemList.length > 0 ? (
                 <>
