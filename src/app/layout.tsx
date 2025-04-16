@@ -40,7 +40,7 @@ export default async function RootLayout({
   // 로그인 확인용 쿠키
   const cookiesStore = cookies();
   const userId = cookiesStore.get("_id")?.value;
-  const token = cookiesStore.get("accessToken")?.value;
+  const refreshToken = cookiesStore.get("refreshToken")?.value;
 
   return (
     <html lang="en">
@@ -48,7 +48,7 @@ export default async function RootLayout({
         className={`${pretendard.variable} antialiased max-w-[390px] mx-auto`}
       >
         <Providers>
-          {token && <UserDataLoader userId={userId} />}
+          {userId && refreshToken && <UserDataLoader userId={userId} />}
           <DynamicHeader />
           <Suspense fallback={<Spinner />}>
             <main className="pb-[100px] pt-[70px]">{children}</main>
