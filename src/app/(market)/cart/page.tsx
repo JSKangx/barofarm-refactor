@@ -1,4 +1,4 @@
-import CartClient from "components/_/market/CartClient";
+import CartClient from "components/_/market/cart/CartClient";
 import { fetchApi } from "lib/api";
 import { BookmarkRes, CartResponse } from "type/cart";
 

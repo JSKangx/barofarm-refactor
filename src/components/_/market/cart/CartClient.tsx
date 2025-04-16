@@ -3,9 +3,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import Button from "components/_/common/Button";
-import CartHeader from "components/_/common/CartHeader";
+import CartHeader from "components/_/market/cart/CartHeader";
 import Checkbox from "components/_/common/Checkbox";
-import CartItem from "components/_/market/CartItem";
+import CartItem from "components/_/market/cart/CartItem";
 import ProductSmall from "components/_/market/ProductSmall";
 import { clientFetchApi } from "lib/client-api";
 import Link from "next/link";
@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useCartStore } from "store/cartStore";
 import { BookmarkItem, CartItems, CartResponse } from "type/cart";
+import CartSummuray from "components/_/market/cart/CartSummury";
 
 interface Props {
   data?: CartItems[];
@@ -314,37 +315,12 @@ export default function CartClient({ data, bookmarkItem }: Props) {
                     <section className="px-5 pb-4 border-b-4 border-gray2">
                       {itemList}
                     </section>
-                    <section className="px-5 py-3">
-                      <div className="border-b border-gray2">
-                        <div className="text-xs flex justify-between mb-3">
-                          <span className="text-gray4">총 상품 금액</span>
-                          <span>{totalFees.toLocaleString()}원</span>
-                        </div>
-                        <div className="text-xs flex justify-between mb-3">
-                          <span className="text-gray4">할인 금액</span>
-                          <span className="text-red1">
-                            {discount === 0
-                              ? `${discount}원`
-                              : `- ${discount.toLocaleString()}원`}
-                          </span>
-                        </div>
-                        <div className="text-xs flex justify-between mb-3">
-                          <span className="text-gray4">배송비</span>
-                          <span>
-                            {totalShippingFees === 0
-                              ? "무료"
-                              : `+ ${totalShippingFees.toLocaleString()}원`}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex justify-between mb-3 py-3 text-[16px] font-bold">
-                        <span>총 결제 금액</span>
-                        <span>
-                          {(totalPayFees + totalShippingFees).toLocaleString()}
-                          원
-                        </span>
-                      </div>
-                    </section>
+                    <CartSummuray
+                      totalFees={totalFees}
+                      discount={discount}
+                      totalShippingFees={totalShippingFees}
+                      totalPayFees={totalPayFees}
+                    />
                     <div
                       ref={targetRef}
                       style={{ height: "1px", background: "transparent" }}
