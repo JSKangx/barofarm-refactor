@@ -15,12 +15,13 @@ export default function MyPageClient() {
 
   // zustand store에서 유저 상태 가져옴
   // 유저가 로그인 상태인지 확인하는 용도
-  const user = useUserStore((store) => store.user);
+  const { user, resetUser } = useUserStore();
 
   // 로그아웃 버튼 클릭시 실행될 함수
   const onHandleLogout = async () => {
     const result = await signOut(); // 쿠키 데이터 삭제
-    queryClient.clear(); // 로그아웃 시 캐시 삭제
+    queryClient.clear(); // 캐시 삭제
+    resetUser(); // store 초기화
     if (result.success) {
       toast.success("로그아웃 되었습니다.");
       router.push("/users/login"); // 로그인 페이지로 리다이렉트
