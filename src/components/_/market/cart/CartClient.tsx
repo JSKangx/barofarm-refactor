@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import { useCartStore } from "store/cartStore";
 import { BookmarkItem, CartItems, CartResponse } from "type/cart";
 import CartSummuray from "components/_/market/cart/CartSummury";
-import { cartCalculation } from "utils/cartCalculation";
+import { useCartCalculation } from "hook/useCartCalculation";
 
 interface Props {
   data?: CartItems[];
@@ -28,10 +28,6 @@ export default function CartClient({ data, bookmarkItem }: Props) {
   const { register, handleSubmit } = useForm();
   // 결제 버튼 보이기 상태
   const [showButton, setShowButton] = useState<boolean>(false);
-  // 최종 상품 금액을 따로 상태로 관리
-  const [totalFees, setTotalFees] = useState<number>(0);
-  const [discount, setDiscount] = useState<number>(0);
-  const [totalPayFees, setTotalPayFees] = useState<number>(0);
   // 체크된 상품의 아이디를 담은 배열 상태 관리
   const [checkedItemsIds, setCheckedItemsIds] = useState<number[]>([]);
   // 보여줄 상품의 타입을 상태 관리
@@ -184,35 +180,12 @@ export default function CartClient({ data, bookmarkItem }: Props) {
     onError: (err) => console.error(err),
   });
 
-  // 선택한 아이템, 데이터가 변경될 때 상품 금액, 할인 금액 다시 계산
-  useEffect(() => {
-    // 체크한 상품이 없다면 총금액, 할인금액을 0으로 설정하고 빠져나감
-    if (checkedItemsIds.length === 0) {
-      setTotalFees(0);
-      setDiscount(0);
-      return;
-    }
-
-    // 체크한 상품이 있다면 상품 금액 계산 훅 실행
-    const { subtotal, totalDiscount } = cartCalculation({
-      checkedItemsIds,
-      data,
-    });
-
-    setTotalFees(subtotal);
-    setDiscount(totalDiscount);
-  }, [checkedItemsIds, data]);
-
-  // 총 결제금액 업데이트
-  useEffect(() => {
-    setTotalPayFees(totalFees - discount);
-  }, [totalFees, discount]);
+  // 상품 금액, 할인 금액, 총 결제 금액을 계산하는 커스텀 훅
+  const { totalFees, discount, totalPayFees, totalShippingFees } =
+    useCartCalculation(checkedItemsIds, data);
 
   // 데이터 없을시 null 반환하여 에러 방지
   if (!data && !bookmarkItem) return null;
-
-  // 최종 배송비 계산
-  const totalShippingFees = totalFees > 30000 || totalFees === 0 ? 0 : 2500;
 
   // 장바구니 아이템으로 화면 렌더링
   const itemList = data?.map((item) => (
