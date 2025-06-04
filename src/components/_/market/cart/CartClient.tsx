@@ -10,13 +10,14 @@ import ProductSmall from "components/_/market/ProductSmall";
 import { clientFetchApi } from "lib/client-api";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useCartStore } from "store/cartStore";
 import { BookmarkItem, CartItems, CartResponse } from "type/cart";
 import CartSummuray from "components/_/market/cart/CartSummury";
 import { useCartCalculation } from "hook/useCartCalculation";
+import { useScrollVisibility } from "hook/useScrollVisibility";
 
 interface Props {
   data?: CartItems[];
@@ -35,46 +36,12 @@ export default function CartClient({ data, bookmarkItem }: Props) {
   // CartStore 상태 가져오기
   const { setCart } = useCartStore();
 
-  // targetRef가 보이면 결제버튼을 보이게 함
-  const targetRef = useRef(null);
-
   const router = useRouter();
 
   // 스크롤에 따라 결제버튼 보이게 하기
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            // 타겟이 보이면 버튼 표시 상태 변경
-            setShowButton(true);
-          } else {
-            setShowButton(false);
-          }
-        });
-      },
-      {
-        // 뷰포트를 기준으로 감지
-        root: null,
-        // 10%만 보이면 트리거
-        threshold: 0.1,
-      }
-    );
-
-    const targetElement = targetRef.current;
-
-    // 조건부 렌더링으로 targetRef가 사용하는 요소가 동적으로 생성되거나 사라질 경우에 에러를 발생시키지 않기 위해 조건문으로 검사 필요.
-    if (targetElement) {
-      observer.observe(targetElement);
-    }
-
-    // 컴포넌트 언마운트시 옵저버 해제 (메모리 누수 방지)
-    return () => {
-      if (targetElement) {
-        observer.unobserve(targetElement);
-      }
-    };
-  }, [data, isCartView]);
+  // targetRef가 보이면 결제버튼을 보이게 함
+  const targetRef = useRef(null);
+  useScrollVisibility(setShowButton, data, isCartView, targetRef);
 
   // 장바구니 상품 삭제
   const queryClient = useQueryClient();
