@@ -106,7 +106,7 @@ export default function ProductDetailClient({ params, product }: Props) {
         height={330}
         alt={product.name}
         className="object-cover"
-        src={`https://11.fesp.shop${product.mainImages[0]?.path}`}
+        src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${product.mainImages[0]?.path}`}
       />
       <section className="p-5 border-b-8 border-b-gray1">
         <div className="flex items-center gap-[10px] pb-5">
@@ -114,7 +114,7 @@ export default function ProductDetailClient({ params, product }: Props) {
             width={25}
             height={25}
             alt={product.name}
-            src={`https://11.fesp.shop${product.seller.image}`}
+            src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${product.seller.image}`}
             className="rounded-full"
           />
           <span className="font-semibold ">{product.seller.name}</span>

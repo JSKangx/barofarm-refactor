@@ -29,7 +29,7 @@ export default function Product(product: ProductType) {
           sizes="100%"
           className="h-[160px] rounded-lg object-cover w-full"
           alt={product.name}
-          src={`https://11.fesp.shop${product.mainImages[0]?.path}`}
+          src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${product.mainImages[0]?.path}`}
         />
         <button
           className="absolute bottom-3 right-3 bg-white p-1.5 rounded-full shadow-bottom"

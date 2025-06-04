@@ -22,7 +22,7 @@ export default function Carousel({ width = 390, height, data }: CarouselProps) {
       <Image
         width={width}
         height={height}
-        src={`https://11.fesp.shop${item?.mainImages[0]?.path}`}
+        src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${item?.mainImages[0]?.path}`}
         alt={`${index}번 이미지`}
         style={{
           height: `${height}px`,

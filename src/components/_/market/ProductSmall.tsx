@@ -75,7 +75,7 @@ export default function ProductSmall({ product, bookmarkId }: Props) {
           height={110}
           className="aspect-square rounded-lg object-cover w-full"
           alt={bookmarkProduct.name}
-          src={`https://11.fesp.shop${bookmarkProduct.mainImages[0]?.path}`}
+          src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${bookmarkProduct.mainImages[0]?.path}`}
           onClick={goDetailPage}
         />
         <button

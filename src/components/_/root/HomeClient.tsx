@@ -61,7 +61,7 @@ export default function HomeClient({
               <Image
                 fill
                 sizes="(max-width: 640px) 33vw, (max-width: 768px) 30vw, 25vw"
-                src={`https://11.fesp.shop${item.image}`}
+                src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${item.image}`}
                 alt={item.content}
                 className="object-cover"
               />

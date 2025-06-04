@@ -73,7 +73,7 @@ export default function CartItem({
     queryKey: ["users", `${product.seller_id}`, "name"],
     queryFn: async () => {
       const res: UserNameRes = await clientFetchApi(
-        `https://11.fesp.shop/users/${product.seller_id}/name`
+        `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/users/${product.seller_id}/name`
       );
       return res;
     },
@@ -100,7 +100,7 @@ export default function CartItem({
         <Image
           width={72}
           height={72}
-          src={`https://11.fesp.shop${product.image.path}`}
+          src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${product.image.path}`}
           alt="상품 이미지"
           className="object-cover cursor-pointer"
           onClick={() => router.push(`/product/${product._id}`)}

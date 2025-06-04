@@ -11,7 +11,7 @@ import { useUserStore } from "store/userStore";
 export default function MyPageClient() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const url = "https://11.fesp.shop";
+  const url = "${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}";
 
   // zustand store에서 유저 상태 가져옴
   // 유저가 로그인 상태인지 확인하는 용도

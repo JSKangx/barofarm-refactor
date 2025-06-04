@@ -10,6 +10,9 @@ interface Props {
   post: PostType;
 }
 
+// baseURL
+const baseUrl = process.env.API_HOST;
+
 export default function PostItem({ post }: Props) {
   const containerRef = useRef(null);
   const [isOverflow, setIsOverflow] = useState(false);
@@ -40,7 +43,7 @@ export default function PostItem({ post }: Props) {
                     ? post.user.image.includes("http://") ||
                       post.user.image.includes("https://")
                       ? post.user.image
-                      : `https://11.fesp.shop${post.user.image}`
+                      : `${baseUrl}${post.user.image}`
                     : "/images/profile/ProfileImage_Sample.jpg"
                 }
                 fill
@@ -71,7 +74,7 @@ export default function PostItem({ post }: Props) {
                   fill
                   sizes="100%"
                   className="relative rounded-md object-cover"
-                  src={`https://11.fesp.shop${post.image}`}
+                  src={`${baseUrl}${post.image}`}
                   onLoad={() => checkOverflow()}
                 />
               </div>
