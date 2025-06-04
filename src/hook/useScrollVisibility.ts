@@ -1,9 +1,7 @@
 import { Dispatch, MutableRefObject, SetStateAction, useEffect } from "react";
-import { CartItems } from "type/cart";
 
 export function useScrollVisibility(
   setShowButton: Dispatch<SetStateAction<boolean>>,
-  data: CartItems[] | undefined,
   isCartView: boolean,
   targetRef: MutableRefObject<null>
 ) {
@@ -40,5 +38,5 @@ export function useScrollVisibility(
         observer.unobserve(targetElement);
       }
     };
-  }, [setShowButton, data, isCartView, targetRef]);
+  }, [setShowButton, isCartView, targetRef]);
 }

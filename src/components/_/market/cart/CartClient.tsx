@@ -41,7 +41,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
   // 스크롤에 따라 결제버튼 보이게 하기
   // targetRef가 보이면 결제버튼을 보이게 함
   const targetRef = useRef(null);
-  useScrollVisibility(setShowButton, data, isCartView, targetRef);
+  useScrollVisibility(setShowButton, isCartView, targetRef);
 
   // 장바구니 상품 삭제
   const queryClient = useQueryClient();

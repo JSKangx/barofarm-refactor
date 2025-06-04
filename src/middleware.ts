@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
   // 토큰으로 인증 확인
-  const isAuthenticated = request.cookies.has("refreshToken");
+  const token = request.cookies.get("accessToken")?.value;
+  const isAuthenticated = !!token;
 
   // 현재 경로
   const path = request.nextUrl.pathname;

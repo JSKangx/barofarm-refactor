@@ -104,6 +104,7 @@ export default function CartItem({
           alt="상품 이미지"
           className="object-cover cursor-pointer"
           onClick={() => router.push(`/product/${product._id}`)}
+          style={{ width: "72px", height: "72px" }}
         />
         <div>
           <div
