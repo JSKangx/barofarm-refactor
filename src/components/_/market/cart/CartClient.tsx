@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import Button from "components/_/common/Button";
 import CartHeader from "components/_/market/cart/CartHeader";
@@ -14,17 +14,17 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useCartStore } from "store/cartStore";
-import { BookmarkItem, CartItems, CartResponse } from "type/cart";
+import { BookmarkRes, CartResponse } from "type/cart";
 import CartSummuray from "components/_/market/cart/CartSummury";
 import { useCartCalculation } from "hook/useCartCalculation";
 import { useScrollVisibility } from "hook/useScrollVisibility";
 
 interface Props {
-  data?: CartItems[];
-  bookmarkItem?: BookmarkItem[];
+  initialCart?: CartResponse;
+  initialBookmarks?: BookmarkRes;
 }
 
-export default function CartClient({ data, bookmarkItem }: Props) {
+export default function CartClient({ initialCart, initialBookmarks }: Props) {
   // 구매할 물품 선택을 위한 폼
   const { register, handleSubmit } = useForm();
   // 결제 버튼 보이기 상태
@@ -42,6 +42,23 @@ export default function CartClient({ data, bookmarkItem }: Props) {
   // targetRef가 보이면 결제버튼을 보이게 함
   const targetRef = useRef(null);
   useScrollVisibility(setShowButton, isCartView, targetRef);
+
+  // 장바구니 상품 조회
+  const { data: cartData } = useQuery({
+    queryKey: ["carts"],
+    queryFn: () => clientFetchApi("/carts"),
+    select: (data: CartResponse) => data.item,
+    initialData: initialCart,
+  });
+
+  // 북마크 상품 조회
+  const { data: bookmarkData } = useQuery({
+    queryKey: ["bookmarks", "product"],
+    queryFn: () => clientFetchApi("/bookmarks/product"),
+    select: (data: BookmarkRes) => data.item,
+    initialData: initialBookmarks,
+  });
+  console.log("bookmarkData", bookmarkData);
 
   // 장바구니 상품 삭제
   const queryClient = useQueryClient();
@@ -95,7 +112,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
     // 전체 선택 체크박스가 체크되었을 때
     if (isChecked) {
       // 장바구니에 담긴 모든 아이템의 아이디를 checkedItemsIds 배열에 담음
-      const allProductsIds = data?.map((item) => item._id);
+      const allProductsIds = cartData?.map((item) => item._id);
       if (allProductsIds) setCheckedItemsIds(allProductsIds);
     } else {
       // 체크 해제되었으면 checkedItemsIds 배열을 빈 배열로 설정
@@ -106,7 +123,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
   // 장바구니 개별 아이템 체크 핸들러
   const toggleCartItemCheck = (targetId: number) => {
     // 체크한 상품을 장바구니 데이터에서 찾음
-    const cartItem = data?.find((item) => item._id === targetId);
+    const cartItem = cartData?.find((item) => item._id === targetId);
 
     // 체크한 상품의 product_id를 checkedCartItems 상태에 추가/제거
     if (cartItem)
@@ -149,13 +166,13 @@ export default function CartClient({ data, bookmarkItem }: Props) {
 
   // 상품 금액, 할인 금액, 총 결제 금액을 계산하는 커스텀 훅
   const { totalFees, discount, totalPayFees, totalShippingFees } =
-    useCartCalculation(checkedItemsIds, data);
+    useCartCalculation(checkedItemsIds, cartData);
 
   // 데이터 없을시 null 반환하여 에러 방지
-  if (!data && !bookmarkItem) return null;
+  if (!initialCart && !initialBookmarks) return null;
 
   // 장바구니 아이템으로 화면 렌더링
-  const itemList = data?.map((item) => (
+  const itemList = cartData?.map((item) => (
     <CartItem
       key={item._id}
       {...item}
@@ -168,7 +185,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
   ));
 
   // 찜한 상품으로 화면 렌더링
-  const bookmarkItems = bookmarkItem?.map((item) => (
+  const bookmarkItems = bookmarkData?.map((item) => (
     <ProductSmall key={item._id} product={item} bookmarkId={item._id} />
   ));
 
@@ -183,7 +200,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
     const selectedItems = checkedItemsIds
       .map((_id) =>
         // 각각의 id 마다 checkedItemsIds에 담긴 id와 같은 상품을 장바구니에서 찾아서 리턴
-        data?.find((item) => item._id === _id)
+        cartData?.find((item) => item._id === _id)
       )
       // 타입 가드
       .filter((item) => item !== undefined);
@@ -209,7 +226,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
           isCartView={isCartView}
           setIsCartView={setIsCartView}
           itemList={itemList}
-          bookmarkItem={bookmarkItem}
+          bookmarkItem={bookmarkData}
         />
         <>
           {/* 장바구니 상품 혹은 찜한 상품 조건부 렌더링 */}
@@ -225,7 +242,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
                       <Checkbox
                         id="checkAll"
                         name="checkAll"
-                        checked={checkedItemsIds.length === data?.length}
+                        checked={checkedItemsIds.length === cartData?.length}
                         onChange={(e) => toggleCheckAll(e.target.checked)}
                       />
                       전체 선택 ({checkedItemsIds.length}/{itemList?.length})
@@ -275,7 +292,7 @@ export default function CartClient({ data, bookmarkItem }: Props) {
           ) : (
             // 찜한 상품렌더링
             <div>
-              {bookmarkItem && bookmarkItem.length > 0 ? (
+              {bookmarkData && bookmarkData.length > 0 ? (
                 <div className="grid grid-cols-3 gap-x-2 gap-y-4 py-2 px-5">
                   {bookmarkItems}
                 </div>

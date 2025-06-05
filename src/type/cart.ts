@@ -75,3 +75,17 @@ export interface BookmarkRes {
   ok: number;
   item: BookmarkItem[];
 }
+
+export interface BoomkmarkDelete {
+  ok: number;
+  message?: string;
+  errorName?: string;
+}
+
+export interface BookmarkableProduct {
+  _id: string;
+  myBookmarkId?: number;
+  extra: {
+    category: string;
+  };
+}

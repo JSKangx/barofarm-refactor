@@ -11,7 +11,6 @@ import { useUserStore } from "store/userStore";
 export default function MyPageClient() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const url = "${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}";
 
   // zustand store에서 유저 상태 가져옴
   // 유저가 로그인 상태인지 확인하는 용도
@@ -48,7 +47,7 @@ export default function MyPageClient() {
                       ? user.image.includes("http://") ||
                         user.image.includes("https://")
                         ? user.image
-                        : url + user.image
+                        : process.env.NEXT_PUBLIC_IMAGE_BASE_URL + user.image
                       : "/images/profile/ProfileImage_Sample.jpg"
                   }
                   className="mr-5 rounded-full object-cover"

@@ -7,11 +7,11 @@ export default async function Cart() {
   const cartRes: CartResponse = await fetchApi("/carts", {
     next: {
       tags: ["carts"],
-      revalidate: 60,
+      revalidate: 60, // 캐시 타임도 설정 가능
     },
   });
   if (!cartRes.item) return null;
-  const cartItem = cartRes.item;
+  const cartItem = cartRes;
 
   // 찜한 상품 목록 조회
   const bookmarkRes: BookmarkRes = await fetchApi("/bookmarks/product", {
@@ -20,7 +20,7 @@ export default async function Cart() {
     },
   });
   if (!bookmarkRes.item) return null;
-  const bookmarkItem = bookmarkRes.item;
+  const bookmarkItem = bookmarkRes;
 
-  return <CartClient data={cartItem} bookmarkItem={bookmarkItem} />;
+  return <CartClient initialCart={cartItem} initialBookmarks={bookmarkItem} />;
 }

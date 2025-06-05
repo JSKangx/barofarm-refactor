@@ -19,9 +19,11 @@ export async function getProducts(category: string) {
   return data;
 }
 
-// products 쿼리 키를 가진 데이터 캐시를 무효화하는 함수
+// 북마크 추가시 서버 액션
 export async function revalidateProductsCache(category?: string) {
   revalidateTag("products");
+  revalidateTag("bookmarks");
+  revalidateTag("carts");
 
   if (category) {
     revalidateTag(category);

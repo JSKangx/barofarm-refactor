@@ -10,9 +10,6 @@ interface Props {
   post: PostType;
 }
 
-// baseURL
-const baseUrl = process.env.API_HOST;
-
 export default function PostItem({ post }: Props) {
   const containerRef = useRef(null);
   const [isOverflow, setIsOverflow] = useState(false);
@@ -43,7 +40,7 @@ export default function PostItem({ post }: Props) {
                     ? post.user.image.includes("http://") ||
                       post.user.image.includes("https://")
                       ? post.user.image
-                      : `${baseUrl}${post.user.image}`
+                      : `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${post.user.image}`
                     : "/images/profile/ProfileImage_Sample.jpg"
                 }
                 fill
@@ -74,7 +71,7 @@ export default function PostItem({ post }: Props) {
                   fill
                   sizes="100%"
                   className="relative rounded-md object-cover"
-                  src={`${baseUrl}${post.image}`}
+                  src={`${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}${post.image}`}
                   onLoad={() => checkOverflow()}
                 />
               </div>

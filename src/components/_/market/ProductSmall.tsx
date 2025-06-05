@@ -7,7 +7,7 @@ import { clientFetchApi } from "lib/client-api";
 import { BookmarkItem, CartResponse } from "type/cart";
 import Image from "next/image";
 import Button from "components/_/common/Button";
-import { BookmarkDelete } from "type/bookmarks";
+import { useBookmarkMutation } from "hook/useBookmarkMutation";
 
 const likeIcon = {
   default: "/icons/icon_likeHeart_no.svg",
@@ -29,21 +29,11 @@ export default function ProductSmall({ product, bookmarkId }: Props) {
   };
 
   const queryClient = useQueryClient();
-  // 북마크 해제 기능
-  const deleteBookmark = useMutation({
-    mutationFn: async () => {
-      const res: BookmarkDelete = await clientFetchApi(
-        `/bookmarks/${bookmarkId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      return res;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["bookmarks", "product"] });
-      queryClient.invalidateQueries({ queryKey: ["carts"] });
-    },
+
+  // 북마크 삭제를 위한 커스텀 훅 사용
+  const { removeBookmark } = useBookmarkMutation({
+    bookmarkId,
+    additionalInvalidateKeys: [["bookmarks", "product"], ["carts"]],
   });
 
   // 장바구니에 추가 기능
@@ -59,7 +49,7 @@ export default function ProductSmall({ product, bookmarkId }: Props) {
       return res;
     },
     onSuccess: () => {
-      deleteBookmark.mutate();
+      removeBookmark.mutate();
       toast.success("장바구니에 추가되었습니다.");
     },
     onError: (error) => {
@@ -82,7 +72,7 @@ export default function ProductSmall({ product, bookmarkId }: Props) {
           className="absolute bottom-3 right-3 bg-white p-1.5 rounded-full shadow-bottom"
           onClick={(e) => {
             e.stopPropagation();
-            deleteBookmark.mutate();
+            removeBookmark.mutate();
             queryClient.invalidateQueries({
               queryKey: ["bookmarks", "product"],
             });
